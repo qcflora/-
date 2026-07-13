@@ -1,0 +1,293 @@
+/* ==========================================
+   公文整合助手 - 编辑器样式
+   ========================================== */
+
+/* A4 纸张预览区 */
+.preview-container {
+  background: #e8ebed;
+  padding: 20px;
+  overflow-y: auto;
+  display: flex;
+  justify-content: center;
+}
+
+.preview-page {
+  width: 210mm;
+  min-height: 297mm;
+  background: white;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  margin: 20px auto;
+  padding: 37mm 26mm 35mm 28mm; /* 上 右 下 左 */
+  box-sizing: border-box;
+  font-family: "FangSong", "仿宋", serif;
+  font-size: 16pt;
+  line-height: 1.5;
+  color: #000;
+}
+
+.preview-page .doc-title {
+  font-family: "SimSun", "宋体", serif;
+  font-size: 22pt;
+  text-align: center;
+  font-weight: bold;
+  margin-bottom: 1em;
+  line-height: 1.4;
+}
+
+.preview-page .doc-recipient {
+  font-family: "FangSong", "仿宋", serif;
+  font-size: 16pt;
+  margin-bottom: 0.5em;
+  font-weight: bold;
+}
+
+.preview-page .doc-body {
+  text-indent: 2em;
+}
+
+.preview-page .doc-paragraph {
+  text-indent: 2em;
+  margin: 0 0 0.5em 0;
+  font-family: "FangSong", "仿宋", serif;
+  font-size: 16pt;
+  line-height: 1.5;
+}
+
+.preview-page .section-heading {
+  font-family: "SimHei", "黑体", sans-serif;
+  font-size: 16pt;
+  font-weight: bold;
+  margin: 1em 0 0.5em 0;
+  text-indent: 0;
+}
+
+.preview-page .section-content {
+  min-height: 2em;
+}
+
+.preview-page .section-content.editable {
+  cursor: text;
+  border: 1px dashed transparent;
+  border-radius: 2px;
+  padding: 4px;
+  margin: -4px;
+}
+
+.preview-page .section-content.editable:hover {
+  border-color: var(--primary-light);
+  background: rgba(26, 82, 118, 0.02);
+}
+
+.preview-page .doc-notes {
+  font-family: "FangSong", "仿宋", serif;
+  font-size: 14pt;
+  margin-top: 1em;
+  color: #333;
+}
+
+.preview-page .doc-signature {
+  font-family: "FangSong", "仿宋", serif;
+  font-size: 16pt;
+  margin-top: 2em;
+  text-align: right;
+  line-height: 1.8;
+}
+
+/* ---------- 公文表格样式（GB/T 9704-2012 规范） ---------- */
+
+.preview-page .table-caption {
+  font-family: "KaiTi", "楷体", serif;
+  font-size: 12pt;
+  text-align: center;
+  margin: 1em 0 0.3em 0;
+  color: #000;
+}
+
+.preview-page .doc-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0 0 0.3em 0;
+  font-size: 12pt;
+  line-height: 1.6;
+}
+
+/* 外框粗线 1.5pt，内框细线 0.5pt */
+.preview-page .doc-table thead tr:first-child th {
+  border-top: 1.5pt solid #000;
+  border-bottom: 0.5pt solid #000;
+}
+
+.preview-page .doc-table thead tr:first-child th:first-child {
+  border-left: 1.5pt solid #000;
+}
+
+.preview-page .doc-table thead tr:first-child th:last-child {
+  border-right: 1.5pt solid #000;
+}
+
+.preview-page .doc-table thead th {
+  font-family: "SimHei", "黑体", sans-serif;
+  font-size: 12pt;
+  font-weight: bold;
+  text-align: center;
+  padding: 6px 8px;
+  background: #f2f2f2;
+  border-left: 0.5pt solid #000;
+  border-right: 0.5pt solid #000;
+}
+
+.preview-page .doc-table tbody td {
+  font-family: "FangSong", "仿宋", serif;
+  font-size: 12pt;
+  padding: 5px 8px;
+  border: 0.5pt solid #000;
+  vertical-align: middle;
+}
+
+/* 最后一行底部加粗 */
+.preview-page .doc-table tbody tr:last-child td {
+  border-bottom: 1.5pt solid #000;
+}
+
+/* 第一列左边加粗 */
+.preview-page .doc-table tbody td:first-child {
+  border-left: 1.5pt solid #000;
+}
+
+/* 最后一列右边加粗 */
+.preview-page .doc-table tbody td:last-child {
+  border-right: 1.5pt solid #000;
+}
+
+.preview-page .table-footer {
+  font-family: "FangSong", "仿宋", serif;
+  font-size: 12pt;
+  text-align: left;
+  margin: 0.2em 0 0.8em 0;
+  color: #333;
+}
+
+/* 可编辑区块 */
+.section-block {
+  position: relative;
+  margin-bottom: 1em;
+  border: 1px solid transparent;
+  border-radius: 2px;
+  padding: 4px;
+  margin-left: -4px;
+  margin-right: -4px;
+  transition: border-color 0.2s ease;
+}
+
+.section-block:hover {
+  border-color: rgba(26, 82, 118, 0.2);
+}
+
+.section-block:hover::before {
+  content: attr(data-index);
+  position: absolute;
+  left: -28px;
+  top: 4px;
+  width: 20px;
+  height: 20px;
+  background: var(--primary);
+  color: #fff;
+  font-size: 11px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-base);
+}
+
+/* 编辑模式 */
+.edit-mode {
+  background: #fffef0;
+  border: 1px solid #f0e6b6;
+}
+
+.edit-textarea {
+  width: 100%;
+  min-height: 120px;
+  padding: 10px;
+  border: 1px solid var(--primary-light);
+  border-radius: 4px;
+  font-family: "FangSong", "仿宋", serif;
+  font-size: 16pt;
+  line-height: 1.5;
+  resize: vertical;
+  outline: none;
+}
+
+.edit-textarea:focus {
+  box-shadow: 0 0 0 3px rgba(26, 82, 118, 0.1);
+}
+
+/* 合规提示标签 */
+.compliance-hint {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 500;
+  margin-left: 8px;
+}
+
+.compliance-hint.warning {
+  background: rgba(243, 156, 18, 0.15);
+  color: #9c600e;
+  border: 1px solid rgba(243, 156, 18, 0.3);
+}
+
+.compliance-hint.error {
+  background: rgba(192, 57, 43, 0.15);
+  color: #922b21;
+  border: 1px solid rgba(192, 57, 43, 0.3);
+}
+
+.compliance-hint.info {
+  background: rgba(52, 152, 219, 0.15);
+  color: #1a5276;
+  border: 1px solid rgba(52, 152, 219, 0.3);
+}
+
+/* 素材列表项 */
+.material-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  margin-bottom: 8px;
+  font-size: 13px;
+  transition: all 0.2s ease;
+}
+
+.material-item:hover {
+  border-color: var(--primary-light);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.06);
+}
+
+.material-item .material-icon {
+  font-size: 18px;
+  opacity: 0.6;
+}
+
+.material-item .material-name {
+  flex: 1;
+  color: var(--text-primary);
+}
+
+.material-item .material-actions {
+  display: flex;
+  gap: 6px;
+}
+
+/* 打印隐藏类 */
+.no-print {
+  display: inherit;
+}

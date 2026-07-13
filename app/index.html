@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>公文整合助手</title>
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="css/editor.css">
+  <link rel="stylesheet" href="css/print.css" media="print">
+  <!-- 第三方库 -->
+  <script src="https://cdn.jsdelivr.net/npm/docx@8.5.0/build/index.umd.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/html2pdf.js@0.10.1/dist/html2pdf.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/pptxgenjs@3.12.0/dist/pptxgen.bundle.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/file-saver@2.0.5/dist/FileSaver.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
+</head>
+<body>
+  <!-- 顶部导航栏 -->
+  <nav id="navbar">
+    <div class="nav-brand">
+      <span class="logo-icon">&#128196;</span>
+      <span class="logo-text">公文整合助手</span>
+    </div>
+    <div class="nav-tabs">
+      <button class="nav-tab active" data-page="projects" onclick="app.navigate('projects')">
+        <span class="tab-icon">&#128193;</span> 项目列表
+      </button>
+      <button class="nav-tab" data-page="chatpaste" onclick="app.navigate('chatpaste')">
+        <span class="tab-icon">&#129302;</span> 对话粘贴
+      </button>
+      <button class="nav-tab" data-page="upload" onclick="app.navigate('upload')">
+        <span class="tab-icon">&#128228;</span> 素材整合
+      </button>
+      <button class="nav-tab" data-page="templates" onclick="app.navigate('templates')">
+        <span class="tab-icon">&#128220;</span> 模板库
+      </button>
+      <button class="nav-tab" data-page="settings" onclick="app.navigate('settings')">
+        <span class="tab-icon">&#9881;</span> 设置
+      </button>
+    </div>
+    <div class="nav-actions">
+      <input type="file" id="import-json-input" accept=".json" hidden onchange="jsonImporter.handleImport(event)">
+      <button class="btn btn-primary" onclick="document.getElementById('import-json-input').click()">
+        <span class="btn-icon">&#8593;</span> 导入 JSON
+      </button>
+    </div>
+  </nav>
+
+  <!-- 主内容区 -->
+  <main id="app-container"></main>
+
+  <!-- 底部状态栏 -->
+  <footer id="statusbar">
+    <span id="status-text">就绪</span>
+    <span id="status-version">v1.0</span>
+  </footer>
+
+  <!-- JS 模块 -->
+  <script src="js/app.js"></script>
+  <script src="js/project-manager.js"></script>
+  <script src="js/template-library.js"></script>
+  <script src="js/editor.js"></script>
+  <script src="js/exporter.js"></script>
+  <script src="js/json-importer.js"></script>
+  <script src="js/feishu-adapter.js"></script>
+  <script src="js/custom-template.js"></script>
+  <script src="js/version-compare.js"></script>
+  <script src="js/material-upload.js"></script>
+  <script src="js/merge-engine.js"></script>
+  <script src="js/align-view.js"></script>
+  <script src="js/chat-paste.js"></script>
+</body>
+</html>

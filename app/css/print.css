@@ -1,0 +1,116 @@
+/* ==========================================
+   公文整合助手 - 打印 / PDF 样式
+   ========================================== */
+
+@media print {
+  /* 隐藏非内容元素 */
+  #navbar,
+  #statusbar,
+  .editor-sidebar,
+  .editor-toolbar,
+  .nav-actions,
+  .project-actions,
+  .template-actions,
+  .btn-icon-only,
+  .filter-tabs,
+  .page-header .btn,
+  .empty-state .btn,
+  .section-block::before {
+    display: none !important;
+  }
+
+  /* 隐藏导入按钮等 */
+  input[type="file"],
+  button[onclick*="import"],
+  button[onclick*="navigate"] {
+    display: none !important;
+  }
+
+  /* 重置 body 背景 */
+  body {
+    background: white !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  /* 主容器调整 */
+  #app-container {
+    padding: 0 !important;
+    overflow: visible !important;
+  }
+
+  .editor-layout {
+    display: block !important;
+    height: auto !important;
+  }
+
+  .editor-main {
+    overflow: visible !important;
+  }
+
+  .preview-wrapper {
+    background: white !important;
+    padding: 0 !important;
+    overflow: visible !important;
+  }
+
+  /* A4 纸张样式调整 */
+  .preview-page {
+    width: 100% !important;
+    min-height: auto !important;
+    margin: 0 !important;
+    padding: 20mm 18mm 20mm 22mm !important;
+    box-shadow: none !important;
+    background: white !important;
+    font-size: 12pt !important;
+    line-height: 1.6 !important;
+    page-break-after: always;
+  }
+
+  .preview-page:last-child {
+    page-break-after: auto;
+  }
+
+  .preview-page .doc-title {
+    font-size: 18pt !important;
+  }
+
+  .preview-page .doc-paragraph,
+  .preview-page .doc-recipient,
+  .preview-page .doc-signature,
+  .preview-page .section-heading {
+    font-size: 12pt !important;
+  }
+
+  /* 去除边框和背景 */
+  .section-block {
+    border: none !important;
+    padding: 0 !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+  }
+
+  /* 确保内容不会被截断 */
+  .section-content {
+    overflow: visible !important;
+  }
+
+  /* 分页控制 */
+  .section-block {
+    page-break-inside: avoid;
+  }
+
+  .doc-title {
+    page-break-after: avoid;
+  }
+
+  .doc-signature {
+    page-break-before: avoid;
+  }
+}
+
+/* html2pdf 专用 */
+.pdf-export .preview-page {
+  margin: 0 auto !important;
+  box-shadow: none !important;
+}

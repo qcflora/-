@@ -1,0 +1,67 @@
+{
+  "version": "1.0",
+  "description": "GB/T 9704-2012 公文表格标准格式规范",
+  "tableCaption": {
+    "font": { "name": "KaiTi", "eastAsia": "KaiTi", "size": 24 },
+    "position": "above",
+    "alignment": "center",
+    "spacingBefore": 120,
+    "spacingAfter": 60,
+    "format": "表{index} {title}",
+    "numberingStyle": "arabic"
+  },
+  "tableHeader": {
+    "font": { "name": "SimHei", "eastAsia": "SimHei", "size": 24, "bold": true },
+    "alignment": "center",
+    "verticalAlignment": "center",
+    "fill": { "color": "F2F2F2" },
+    "border": {
+      "top": { "style": "single", "size": 12, "color": "000000" },
+      "bottom": { "style": "single", "size": 12, "color": "000000" }
+    }
+  },
+  "tableBody": {
+    "font": { "name": "FangSong", "eastAsia": "FangSong", "size": 24 },
+    "alignment": "center",
+    "verticalAlignment": "center",
+    "border": {
+      "top": { "style": "single", "size": 4, "color": "000000" },
+      "bottom": { "style": "single", "size": 4, "color": "000000" },
+      "left": { "style": "single", "size": 4, "color": "000000" },
+      "right": { "style": "single", "size": 4, "color": "000000" }
+    }
+  },
+  "tableBodyText": {
+    "font": { "name": "FangSong", "eastAsia": "FangSong", "size": 24 },
+    "alignment": "left",
+    "verticalAlignment": "center"
+  },
+  "tableBodyNumber": {
+    "font": { "name": "FangSong", "eastAsia": "FangSong", "size": 24 },
+    "alignment": "right",
+    "verticalAlignment": "center"
+  },
+  "tableFooter": {
+    "font": { "name": "FangSong", "eastAsia": "FangSong", "size": 24 },
+    "position": "below",
+    "alignment": "left",
+    "spacingBefore": 60,
+    "spacingAfter": 120,
+    "prefix": "注："
+  },
+  "tableLayout": {
+    "outerBorderSize": 12,
+    "innerBorderSize": 4,
+    "borderColor": "000000",
+    "borderStyle": "single",
+    "rowHeightTwips": 400,
+    "widthPercent": 100
+  },
+  "textAlignmentRules": {
+    "textColumn": "left",
+    "numberColumn": "right",
+    "dateColumn": "center",
+    "headerColumn": "center",
+    "autoDetect": true
+  }
+}

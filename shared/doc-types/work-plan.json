@@ -1,0 +1,31 @@
+{
+  "id": "work-plan",
+  "name": "工作方案",
+  "aliases": ["工作方案", "实施方案", "工作计划"],
+  "category": "material",
+  "fontProfile": "internal-readable",
+  "layoutProfile": "internal-readable",
+  "direction": "不限",
+  "structure": {
+    "sections": [
+      { "id": "guiding", "title": "指导思想", "required": true },
+      { "id": "objectives", "title": "工作目标", "required": true },
+      { "id": "tasks", "title": "工作任务", "required": true },
+      { "id": "steps", "title": "实施步骤", "required": false },
+      { "id": "measures", "title": "保障措施", "required": false }
+    ],
+    "ending": null,
+    "hasRecipient": false,
+    "hasAttachments": true,
+    "hasNotes": false,
+    "subTypes": ["总体方案", "专项方案", "试点方案", "应急方案"]
+  },
+  "writingTips": "方案须目标明确、措施具体、责任到人；指导思想须与上级政策对标；工作目标须可量化、可考核；工作任务须分解到岗、落实到人；实施步骤须有时间节点和里程碑；保障措施须有组织、经费、制度支撑。",
+  "complianceRules": [
+    "目标须量化，忌空泛口号",
+    "任务分解须明确责任单位和完成时限",
+    "实施步骤须具备可操作性",
+    "保障措施须涵盖组织、经费、制度、督导等方面"
+  ],
+  "description": "工作方案是对某项工作的目标、任务、步骤、措施等进行系统部署的事务性文书。不属于法定公文，但须有严密的逻辑结构和可操作的实施路径。"
+}

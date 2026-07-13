@@ -1,0 +1,10 @@
+{
+  "id": "request",
+  "name": "请示",
+  "aliases": ["请示", "申请", "呈请"],
+  "category": "official",
+  "fontProfile": "official-standard",
+  "layoutProfile": "official-standard",
+  "direction": "上行",
+  "description": "用于向上级请求指示、批准"
+}

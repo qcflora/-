@@ -1,0 +1,13 @@
+{
+  "name": "official-standard",
+  "displayName": "法定公文标准字体",
+  "description": "符合 GB/T 9704-2012《党政机关公文格式》的字体方案",
+  "fonts": {
+    "title": { "family": "SimSun", "sizePt": 22, "description": "2号小标宋体，标题居中" },
+    "body": { "family": "FangSong", "sizePt": 16, "description": "3号仿宋体，正文" },
+    "heading1": { "family": "SimHei", "sizePt": 16, "description": "3号黑体，一级标题" },
+    "heading2": { "family": "KaiTi", "sizePt": 16, "description": "3号楷体，二级标题" },
+    "heading3": { "family": "FangSong", "sizePt": 16, "description": "3号仿宋，三级标题（去粗、补缩进）" },
+    "pageNumber": { "family": "SimSun", "sizePt": 14, "description": "4号宋体，页码" }
+  }
+}

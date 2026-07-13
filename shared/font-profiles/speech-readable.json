@@ -1,0 +1,13 @@
+{
+  "name": "speech-readable",
+  "displayName": "讲话稿可读字体",
+  "description": "针对讲话稿现场宣读和批注习惯优化的字体方案，标题采用黑体增强辨识度",
+  "fonts": {
+    "title": { "family": "SimHei", "sizePt": 22, "description": "2号黑体，标题居中（增强现场辨识度）" },
+    "body": { "family": "FangSong", "sizePt": 16, "description": "3号仿宋体，正文" },
+    "heading1": { "family": "SimHei", "sizePt": 16, "description": "3号黑体，一级标题" },
+    "heading2": { "family": "KaiTi", "sizePt": 16, "description": "3号楷体，二级标题" },
+    "heading3": { "family": "FangSong", "sizePt": 16, "description": "3号仿宋，三级标题（去粗、补缩进）" },
+    "pageNumber": { "family": "SimSun", "sizePt": 14, "description": "4号宋体，页码" }
+  }
+}

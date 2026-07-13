@@ -1,0 +1,31 @@
+{
+  "id": "summary",
+  "name": "工作总结",
+  "aliases": ["工作总结", "总结", "年度总结"],
+  "category": "material",
+  "fontProfile": "internal-readable",
+  "layoutProfile": "internal-readable",
+  "direction": "不限",
+  "structure": {
+    "sections": [
+      { "id": "overview", "title": "基本情况", "required": true },
+      { "id": "practices", "title": "主要做法", "required": true },
+      { "id": "achievements", "title": "工作成效", "required": true },
+      { "id": "problems", "title": "存在问题", "required": false },
+      { "id": "plans", "title": "下一步打算", "required": false }
+    ],
+    "ending": null,
+    "hasRecipient": false,
+    "hasAttachments": false,
+    "hasNotes": false,
+    "subTypes": ["年度总结", "阶段性总结", "专项总结", "个人总结"]
+  },
+  "writingTips": "总结须以回顾和反思为主线，做法与成效须对应；数据须具体量化，忌空泛描述；问题分析须实事求是，不回避短板；下一步打算须与存在问题形成呼应，体现改进闭环。",
+  "complianceRules": [
+    "成绩与问题须实事求是，忌夸大或避重就轻",
+    "经验提炼须具备可复制性，忌泛泛而谈",
+    "数据须前后一致，统计口径须统一",
+    "非法定公文，不套用红头文件格式"
+  ],
+  "description": "工作总结是对一定时期内的工作进行回顾、分析、评价和展望的事务性文书。不属于法定公文，主要用于内部交流、汇报和自我提升。"
+}

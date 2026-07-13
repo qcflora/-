@@ -1,0 +1,18 @@
+{
+  "name": "internal-readable",
+  "displayName": "内部材料版式",
+  "description": "基于公文标准，针对内部材料屏幕阅读和打印浏览优化的版式方案",
+  "page": {
+    "width": "210mm",
+    "height": "297mm",
+    "marginTop": "37mm",
+    "marginBottom": "35mm",
+    "marginLeft": "28mm",
+    "marginRight": "26mm"
+  },
+  "paragraph": {
+    "firstLineIndent": "2em",
+    "lineHeight": 1.6,
+    "paragraphSpacing": "3pt"
+  }
+}

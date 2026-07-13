@@ -1,0 +1,10 @@
+{
+  "id": "speech",
+  "name": "讲话稿",
+  "aliases": ["讲话稿", "讲话", "发言稿"],
+  "category": "material",
+  "fontProfile": "official-standard",
+  "layoutProfile": "official-standard",
+  "direction": "公开",
+  "description": "用于领导讲话、会议发言、动员部署、总结点评"
+}

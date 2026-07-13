@@ -1,0 +1,10 @@
+{
+  "id": "presentation",
+  "name": "汇报材料",
+  "aliases": ["汇报材料", "汇报", "工作汇报"],
+  "category": "material",
+  "fontProfile": "official-standard",
+  "layoutProfile": "official-standard",
+  "direction": "上行",
+  "description": "用于向领导汇报、向检查组报送、向上级报备"
+}

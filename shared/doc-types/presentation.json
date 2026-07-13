@@ -1,0 +1,31 @@
+{
+  "id": "presentation",
+  "name": "汇报材料",
+  "aliases": ["汇报材料", "汇报稿", "情况汇报"],
+  "category": "material",
+  "fontProfile": "internal-readable",
+  "layoutProfile": "internal-readable",
+  "direction": "上行",
+  "structure": {
+    "sections": [
+      { "id": "background", "title": "背景", "required": true },
+      { "id": "practices", "title": "主要做法", "required": true },
+      { "id": "achievements", "title": "工作成效", "required": true },
+      { "id": "problems", "title": "存在问题", "required": false },
+      { "id": "plans", "title": "下一步打算", "required": false }
+    ],
+    "ending": null,
+    "hasRecipient": false,
+    "hasAttachments": true,
+    "hasNotes": false,
+    "subTypes": ["工作汇报", "专题汇报", "经验汇报", "检查汇报"]
+  },
+  "writingTips": "汇报材料须突出亮点、数据支撑、条理清晰；背景部分须简明扼要，说明汇报缘由；主要做法须提炼经验，忌流水账；工作成效须用数据说话，突出对比；存在问题须实事求是，不回避；下一步打算须回应问题，体现思路。",
+  "complianceRules": [
+    "突出亮点和特色，忌平铺直叙",
+    "数据须准确，对比须合理",
+    "问题分析须客观，忌过度粉饰",
+    "PPT汇报时文字须精炼，一页一主题"
+  ],
+  "description": "汇报材料是向上级或有关方面汇报工作、反映情况、介绍经验的事务性文书。常用于会议汇报、检查汇报、经验交流等场景，可配合PPT使用。"
+}

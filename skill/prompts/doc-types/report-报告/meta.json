@@ -1,0 +1,10 @@
+{
+  "id": "report",
+  "name": "报告",
+  "aliases": ["报告", "工作报告", "情况报告"],
+  "category": "official",
+  "fontProfile": "official-standard",
+  "layoutProfile": "official-standard",
+  "direction": "上行",
+  "description": "用于向上级汇报工作、反映情况、回复询问"
+}

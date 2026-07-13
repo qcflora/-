@@ -1,0 +1,16 @@
+{
+  "name": "official-doc-assembler-skill",
+  "version": "1.0.0",
+  "description": "公文整合助手 - TRAE Skill",
+  "main": "lib/index.js",
+  "scripts": {
+    "test": "node test/test.js"
+  },
+  "dependencies": {
+    "ajv": "^8.12.0",
+    "docx": "^8.5.0"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  }
+}

@@ -1,0 +1,53 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "required": ["version", "docType", "docTypeName", "title", "date", "sections"],
+  "properties": {
+    "version": { "type": "string", "const": "1.0" },
+    "docType": { "type": "string", "description": "文种 ID" },
+    "docTypeName": { "type": "string", "description": "文种中文名" },
+    "title": { "type": "string" },
+    "sender": { "type": "string" },
+    "recipient": { "type": "string" },
+    "date": { "type": "string", "pattern": "^\\d{4}年\\d{1,2}月\\d{1,2}日$" },
+    "sections": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["heading", "level", "content"],
+        "properties": {
+          "heading": { "type": "string" },
+          "level": { "type": "integer", "minimum": 1, "maximum": 3 },
+          "content": { "type": "string" },
+          "sourceMaterials": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "author": { "type": "string" },
+                "originalText": { "type": "string" },
+                "status": { "type": "string", "enum": ["adopted", "skipped", "modified"] }
+              }
+            }
+          }
+        }
+      }
+    },
+    "attachments": { "type": "array", "items": { "type": "string" } },
+    "notes": { "type": "string" },
+    "complianceChecks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "type": { "type": "string", "enum": ["format", "content", "policy", "language"] },
+          "location": { "type": "string" },
+          "message": { "type": "string" },
+          "severity": { "type": "string", "enum": ["error", "warning", "info"] }
+        }
+      }
+    },
+    "customTemplate": { "type": ["string", "null"] },
+    "exportedAt": { "type": "string", "format": "date-time" }
+  }
+}

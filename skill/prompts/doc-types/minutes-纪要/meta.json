@@ -1,0 +1,10 @@
+{
+  "id": "minutes",
+  "name": "纪要",
+  "aliases": ["纪要", "会议纪要", "会议记录"],
+  "category": "official",
+  "fontProfile": "official-standard",
+  "layoutProfile": "official-standard",
+  "direction": "下行",
+  "description": "用于记载会议主要情况和议定事项"
+}

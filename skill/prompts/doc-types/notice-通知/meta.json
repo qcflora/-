@@ -1,0 +1,10 @@
+{
+  "id": "notice",
+  "name": "通知",
+  "aliases": ["通知", "发文通知"],
+  "category": "official",
+  "fontProfile": "official-standard",
+  "layoutProfile": "official-standard",
+  "direction": "下行",
+  "description": "用于发布、传达、转发事项或安排部署工作"
+}

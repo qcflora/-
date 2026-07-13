@@ -1,0 +1,18 @@
+{
+  "name": "official-standard",
+  "displayName": "法定公文标准版式",
+  "description": "符合 GB/T 9704-2012《党政机关公文格式》的版式方案",
+  "page": {
+    "width": "210mm",
+    "height": "297mm",
+    "marginTop": "37mm",
+    "marginBottom": "35mm",
+    "marginLeft": "28mm",
+    "marginRight": "26mm"
+  },
+  "paragraph": {
+    "firstLineIndent": "2em",
+    "lineHeight": 1.5,
+    "paragraphSpacing": "0pt"
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "id": "request",
+  "name": "请示",
+  "aliases": ["请示", "呈批件"],
+  "category": "official",
+  "fontProfile": "official-standard",
+  "layoutProfile": "official-standard",
+  "direction": "上行",
+  "structure": {
+    "sections": [
+      { "id": "reason", "title": "请示缘由", "required": true },
+      { "id": "matters", "title": "请示事项", "required": true }
+    ],
+    "ending": "妥否，请批示。",
+    "hasRecipient": true,
+    "hasAttachments": true,
+    "hasNotes": true,
+    "subTypes": ["请求指示", "请求批准", "请求批转", "请求协调"]
+  },
+  "writingTips": "请示须一文一事，不得在一份请示中请求多个互不相关的事项；缘由部分须充分说明请示的必要性和合理性；事项部分须明确具体，忌含糊其辞；结语须规范使用‘妥否，请批示’或‘以上请示，请予审批’。",
+  "complianceRules": [
+    "一文一事，不得多头请示",
+    "不得在报告等非请示文种中夹带请示事项",
+    "请示事项须明确，忌使用‘可否’等模糊表述",
+    "须标注联系人及联系电话，便于上级沟通"
+  ],
+  "description": "请示适用于向上级机关请求指示、批准。是典型的上行文种，须遵循一文一事原则，语气谦恭得体，结语规范。"
+}

@@ -1,0 +1,31 @@
+{
+  "id": "speech",
+  "name": "讲话稿",
+  "aliases": ["讲话稿", "讲话", "发言稿"],
+  "category": "material",
+  "fontProfile": "speech-readable",
+  "layoutProfile": "speech-readable",
+  "direction": "不限",
+  "structure": {
+    "sections": [
+      { "id": "opening", "title": "开场说明", "required": true },
+      { "id": "situation", "title": "形势判断", "required": false },
+      { "id": "tasks", "title": "重点任务", "required": true },
+      { "id": "requirements", "title": "工作要求", "required": false },
+      { "id": "closing", "title": "结束语", "required": true }
+    ],
+    "ending": null,
+    "hasRecipient": false,
+    "hasAttachments": false,
+    "hasNotes": false,
+    "subTypes": ["部署讲话", "总结讲话", "表彰讲话", "动员讲话", "纪念讲话"]
+  },
+  "writingTips": "讲话稿须有现场感和第一人称视角；称谓顶格单独成段，全篇只出现一次；多短句、少嵌套，适合口头表达；段落不宜过长，便于停顿换气；数据引用须准确，忌生僻术语。",
+  "complianceRules": [
+    "称谓须规范，顶格单独成段",
+    "避免过于书面化的长句和复杂句式",
+    "数据和政策引用须准确，忌编造",
+    "结束时须收束有力，忌戛然而止"
+  ],
+  "description": "讲话稿是领导或代表在会议、活动等场合发表口头讲话的文字稿。具有现场感、口语化和第一人称特征，不属于法定公文，但须符合政治规范和语言规范。"
+}

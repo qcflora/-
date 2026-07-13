@@ -1,0 +1,29 @@
+{
+  "id": "letter",
+  "name": "函",
+  "aliases": ["函", "信函", "公函"],
+  "category": "official",
+  "fontProfile": "official-standard",
+  "layoutProfile": "official-standard",
+  "direction": "平行",
+  "structure": {
+    "sections": [
+      { "id": "reason", "title": "事项缘由", "required": true },
+      { "id": "opinion", "title": "主要意见", "required": true },
+      { "id": "cooperation", "title": "配合事项", "required": false }
+    ],
+    "ending": "专此函达。",
+    "hasRecipient": true,
+    "hasAttachments": false,
+    "hasNotes": false,
+    "subTypes": ["商洽函", "询问函", "答复函", "请批函", "告知函"]
+  },
+  "writingTips": "函适用于不相隶属机关之间行文，须遵循‘一函一事’原则；语气须平等、审慎、礼貌；商洽函须明确提出商洽事项和期望回复时限；答复函须针对来函逐条回应。",
+  "complianceRules": [
+    "一函一事，不得在一份函中夹杂多个不相关事项",
+    "语气须平等审慎，忌用命令或请示口吻",
+    "请批函与请示区分：向无隶属关系的业务主管部门请求批准用函",
+    "复函须引述来函标题和文号"
+  ],
+  "description": "函适用于不相隶属机关之间商洽工作、询问和答复问题、请求批准和答复审批事项。是唯一的平行法定公文文种，强调平等协商。"
+}

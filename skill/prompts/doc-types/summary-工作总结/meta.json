@@ -1,0 +1,10 @@
+{
+  "id": "summary",
+  "name": "工作总结",
+  "aliases": ["工作总结", "总结", "年度总结"],
+  "category": "material",
+  "fontProfile": "official-standard",
+  "layoutProfile": "official-standard",
+  "direction": "公开",
+  "description": "用于阶段性复盘、年度总结、专项工作总结"
+}

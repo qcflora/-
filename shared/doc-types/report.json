@@ -1,0 +1,30 @@
+{
+  "id": "report",
+  "name": "报告",
+  "aliases": ["报告", "情况报告", "工作报告"],
+  "category": "official",
+  "fontProfile": "official-standard",
+  "layoutProfile": "official-standard",
+  "direction": "上行",
+  "structure": {
+    "sections": [
+      { "id": "overview", "title": "基本情况", "required": true },
+      { "id": "work", "title": "工作开展情况", "required": true },
+      { "id": "problems", "title": "存在问题", "required": false },
+      { "id": "suggestions", "title": "下一步建议", "required": false }
+    ],
+    "ending": "特此报告。",
+    "hasRecipient": true,
+    "hasAttachments": true,
+    "hasNotes": true,
+    "subTypes": ["工作报告", "情况报告", "答复报告", "报送报告"]
+  },
+  "writingTips": "报告须客观陈述事实，数据须有据可查；工作情况的叙述须有条理，可按时间、区域或业务线条组织；问题分析须深入，建议须具有可操作性。",
+  "complianceRules": [
+    "不得夹带请示事项",
+    "报告中不得出现‘请批示’‘请批复’等请示用语",
+    "情况报告须一事一报，忌多头并述",
+    "数据引用须标明来源或统计口径"
+  ],
+  "description": "报告适用于向上级机关汇报工作、反映情况，回复上级机关的询问。具有陈述性、汇报性和单向性特点，不得夹带请示事项。"
+}

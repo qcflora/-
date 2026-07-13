@@ -1,0 +1,10 @@
+{
+  "id": "letter",
+  "name": "函",
+  "aliases": ["函", "信函", "公函"],
+  "category": "official",
+  "fontProfile": "official-standard",
+  "layoutProfile": "official-standard",
+  "direction": "平行",
+  "description": "用于平行机关或不相隶属机关之间商洽、询问、答复事项"
+}

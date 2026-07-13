@@ -1,0 +1,29 @@
+{
+  "id": "briefing",
+  "name": "简报",
+  "aliases": ["简报", "工作简报", "信息简报"],
+  "category": "material",
+  "fontProfile": "internal-readable",
+  "layoutProfile": "internal-readable",
+  "direction": "不限",
+  "structure": {
+    "sections": [
+      { "id": "lead", "title": "导语", "required": true },
+      { "id": "body", "title": "主体", "required": true },
+      { "id": "ending", "title": "结语", "required": false }
+    ],
+    "ending": null,
+    "hasRecipient": false,
+    "hasAttachments": false,
+    "hasNotes": false,
+    "subTypes": ["工作简报", "会议简报", "动态简报", "专题简报"]
+  },
+  "writingTips": "简报须篇幅短小、内容精练、重点突出；导语须开门见山，概括核心内容；主体部分用事实和数据说话，忌空话套话；结语可提出建议或展望，也可自然收束；整体字数一般控制在1000字以内。",
+  "complianceRules": [
+    "篇幅须精炼，忌长篇大论",
+    "事实须准确，数据须可靠",
+    "不得涉及国家秘密和敏感信息",
+    "简报期号、编发单位、印发日期须规范标注"
+  ],
+  "description": "简报是机关、单位内部用于反映情况、交流经验、沟通信息的简短事务性文书。具有快、简、准的特点，不属于法定公文。"
+}

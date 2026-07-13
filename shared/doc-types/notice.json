@@ -1,0 +1,30 @@
+{
+  "id": "notice",
+  "name": "通知",
+  "aliases": ["通知", "发文通知"],
+  "category": "official",
+  "fontProfile": "official-standard",
+  "layoutProfile": "official-standard",
+  "direction": "下行",
+  "structure": {
+    "sections": [
+      { "id": "purpose", "title": "目的与依据", "required": true },
+      { "id": "requirements", "title": "总体要求", "required": false },
+      { "id": "tasks", "title": "重点任务", "required": true },
+      { "id": "relevant", "title": "有关要求", "required": false }
+    ],
+    "ending": "特此通知。",
+    "hasRecipient": true,
+    "hasAttachments": true,
+    "hasNotes": true,
+    "subTypes": ["印发", "批转", "转发", "部署", "事务"]
+  },
+  "writingTips": "通知的标题动词要精准：印发/批转/转发不可混用；部署类须有责任单位、完成时限、报送要求；转发类需准确引用被转发文件标题与文号。",
+  "complianceRules": [
+    "不得夹带请示事项",
+    "部署型正文不能过短，须有具体任务分解",
+    "转发型通知须保留被转发文件的完整标题和发文字号",
+    "批转型通知须注明批转意见或执行要求"
+  ],
+  "description": "通知适用于发布、传达要求下级机关执行和有关单位周知或者执行的事项，批转、转发公文。是最常用的下行文种之一。"
+}

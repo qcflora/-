@@ -1,0 +1,18 @@
+{
+  "name": "speech-readable",
+  "displayName": "讲话稿版式",
+  "description": "针对讲话稿现场宣读和批注习惯优化的版式方案，行距更宽松，便于停顿和标注",
+  "page": {
+    "width": "210mm",
+    "height": "297mm",
+    "marginTop": "37mm",
+    "marginBottom": "35mm",
+    "marginLeft": "28mm",
+    "marginRight": "26mm"
+  },
+  "paragraph": {
+    "firstLineIndent": "2em",
+    "lineHeight": 1.8,
+    "paragraphSpacing": "6pt"
+  }
+}

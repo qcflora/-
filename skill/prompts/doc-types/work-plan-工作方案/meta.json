@@ -1,0 +1,10 @@
+{
+  "id": "work-plan",
+  "name": "工作方案",
+  "aliases": ["工作方案", "实施方案", "工作计划"],
+  "category": "material",
+  "fontProfile": "official-standard",
+  "layoutProfile": "official-standard",
+  "direction": "下行",
+  "description": "用于专项行动、阶段性工作、制度落地、项目推进"
+}

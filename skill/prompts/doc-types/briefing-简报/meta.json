@@ -1,0 +1,10 @@
+{
+  "id": "briefing",
+  "name": "简报",
+  "aliases": ["简报", "工作简报", "信息简报"],
+  "category": "material",
+  "fontProfile": "official-standard",
+  "layoutProfile": "official-standard",
+  "direction": "下行",
+  "description": "用于简要报送动态、会议情况、阶段成果、当前新闻整理"
+}

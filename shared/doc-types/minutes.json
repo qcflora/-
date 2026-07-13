@@ -1,0 +1,32 @@
+{
+  "id": "minutes",
+  "name": "纪要",
+  "aliases": ["纪要", "会议纪要", "会议记录"],
+  "category": "official",
+  "fontProfile": "official-standard",
+  "layoutProfile": "official-standard",
+  "direction": "不限",
+  "structure": {
+    "sections": [
+      { "id": "preamble", "title": "导语", "required": true },
+      { "id": "considers", "title": "会议认为", "required": false },
+      { "id": "pointsOut", "title": "会议指出", "required": true },
+      { "id": "emphasizes", "title": "会议强调", "required": false },
+      { "id": "requires", "title": "会议要求", "required": true },
+      { "id": "decides", "title": "会议决定", "required": false }
+    ],
+    "ending": null,
+    "hasRecipient": false,
+    "hasAttachments": false,
+    "hasNotes": true,
+    "subTypes": ["办公会议纪要", "专题会议纪要", "座谈会议纪要", "协调会议纪要"]
+  },
+  "writingTips": "纪要须忠实反映会议主要精神和议定事项；提示语须递进成链：会议认为（定性判断）→ 会议指出（方向问题）→ 会议强调（重点难点）→ 会议要求（落实措施）→ 会议决定（结论事项）；无主送单位、无落款盖章，须有版记。",
+  "complianceRules": [
+    "提示语层级须递进，不可降级混用",
+    "须客观记录，忌加入记录者个人评价",
+    "会议决定事项须明确责任主体和完成时限",
+    "涉及敏感内容须按保密规定处理"
+  ],
+  "description": "纪要适用于记载会议主要情况和议定事项。是法定公文之一，无主送单位、无落款盖章，通过版记分发。须客观、准确、精炼地反映会议核心内容。"
+}
