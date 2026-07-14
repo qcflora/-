@@ -2010,3 +2010,222 @@ tr:hover { background: rgba(26, 82, 118, 0.02); }
   color: var(--text-muted);
   margin-top: 2px;
 }
+
+/* ==========================================
+   v2 新增组件样式
+   ========================================== */
+
+/* ===== Session Bar ===== */
+.session-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 16px;
+  background: rgba(52, 152, 219, 0.06);
+  border: 1px solid rgba(52, 152, 219, 0.15);
+  border-radius: var(--radius);
+  margin-bottom: 16px;
+  font-size: 13px;
+  color: var(--primary);
+}
+
+/* ===== Step Card ===== */
+.step-card { position: relative; }
+.step-card.disabled { opacity: 0.6; pointer-events: none; }
+
+.step-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  margin-bottom: 20px;
+}
+
+.step-number {
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  background: var(--primary);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 15px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.step-info { flex: 1; }
+.step-info h3 { margin: 0 0 4px 0; font-size: 16px; }
+.step-info p { margin: 0; font-size: 13px; color: var(--text-muted); }
+
+/* ===== DocType Grid ===== */
+.doctype-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.doctype-card {
+  padding: 14px 10px;
+  border: 2px solid var(--border);
+  border-radius: var(--radius);
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  background: #fff;
+}
+
+.doctype-card:hover {
+  border-color: var(--primary-light);
+  transform: translateY(-2px);
+}
+
+.doctype-card.selected {
+  border-color: var(--primary);
+  background: rgba(26, 82, 118, 0.04);
+  box-shadow: 0 0 0 3px rgba(26, 82, 118, 0.08);
+}
+
+.dt-icon { font-size: 24px; margin-bottom: 6px; }
+.dt-name { font-size: 13px; font-weight: 600; color: var(--text-primary); }
+.dt-category { font-size: 10px; color: var(--text-muted); margin-top: 2px; }
+
+/* ===== Template Preview Header ===== */
+.tp-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--border);
+}
+.tp-label { font-weight: 600; color: var(--primary); font-size: 14px; }
+.tp-desc { font-size: 12px; color: var(--text-muted); }
+
+/* ===== Materials Toolbar ===== */
+.materials-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.materials-toolbar h3 { margin: 0; font-size: 15px; }
+.toolbar-right { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+
+/* ===== Search Box ===== */
+.search-box {
+  position: relative;
+  width: 220px;
+}
+.search-box input {
+  width: 100%;
+  padding: 7px 32px 7px 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  font-size: 13px;
+  font-family: inherit;
+  outline: none;
+}
+.search-box input:focus {
+  border-color: var(--primary-light);
+  box-shadow: 0 0 0 3px rgba(26, 82, 118, 0.08);
+}
+.search-icon {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 13px;
+  color: var(--text-muted);
+  pointer-events: none;
+}
+
+/* ===== Search Highlight ===== */
+mark {
+  background: rgba(251, 191, 36, 0.3);
+  color: inherit;
+  padding: 0 2px;
+  border-radius: 2px;
+}
+
+/* ===== Loading Indicator ===== */
+.loading-indicator {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 20px;
+  color: var(--text-muted);
+  font-size: 14px;
+}
+
+.spinner {
+  width: 20px; height: 20px;
+  border: 2px solid var(--border);
+  border-top-color: var(--primary);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ===== Material Card Selected ===== */
+.material-card.selected {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 2px rgba(26, 82, 118, 0.1);
+}
+
+.material-checkbox {
+  display: flex;
+  align-items: center;
+  margin-right: 4px;
+}
+.material-checkbox input[type="checkbox"] {
+  width: 16px; height: 16px;
+  cursor: pointer;
+}
+
+/* ===== Settings Stats ===== */
+.setting-stats {
+  display: flex;
+  gap: 24px;
+  margin-bottom: 16px;
+}
+.st-item { text-align: center; }
+.st-num { font-size: 28px; font-weight: 700; color: var(--primary); line-height: 1; }
+.st-label { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
+
+.setting-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+
+/* ===== Button Icon Only ===== */
+.btn-icon-only {
+  width: 32px; height: 32px;
+  border: none;
+  background: none;
+  border-radius: var(--radius);
+  cursor: pointer;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-muted);
+  transition: all 0.2s;
+}
+.btn-icon-only:hover { background: var(--bg-body); color: var(--danger); }
+.btn-icon-only.danger:hover { color: var(--danger); }
+
+/* ===== Empty State Icon ===== */
+.empty-icon { font-size: 36px; margin-bottom: 8px; opacity: 0.4; }
+
+/* ===== Responsive v2 ===== */
+@media (max-width: 768px) {
+  .doctype-grid { grid-template-columns: repeat(2, 1fr); }
+  .materials-toolbar { flex-direction: column; align-items: flex-start; }
+  .toolbar-right { width: 100%; }
+  .search-box { width: 100%; }
+  .session-bar { flex-direction: column; gap: 8px; align-items: flex-start; }
+}

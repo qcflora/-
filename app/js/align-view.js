@@ -328,8 +328,11 @@ const alignView = {
             <button class="btn btn-secondary" onclick="app.navigate('align')">
               <span class="btn-icon">&#8592;</span> 返回对齐
             </button>
+            <button class="btn btn-success" onclick="app.saveMergeAsProject()">
+              <span class="btn-icon">&#128190;</span> 保存到项目
+            </button>
             <button class="btn btn-primary" onclick="alignView.saveAndExport()">
-              <span class="btn-icon">&#128190;</span> 保存并导出
+              <span class="btn-icon">&#128190;</span> 导出文件
             </button>
           </div>
         </div>

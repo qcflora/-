@@ -1,13 +1,10 @@
 // ==========================================
-// 公文整合助手 - 素材上传与解析模块
-// 供最终整合者批量收集团队成员材料
+// 公文整合助手 - 素材上传与解析模块 v2
+// 升级：接入数据持久化、会话恢复、素材搜索、批量操作
 // ==========================================
 
 const materialUploader = {
-  // 当前处理的素材列表
-  materials: [],
-
-  // 文种列表（与 shared/doc-types/ 对齐）
+  // 文种列表
   docTypes: [
     { id: 'presentation', name: '汇报材料', icon: '&#128200;', category: '常见正式材料', desc: '向上级或有关方面汇报工作、反映情况' },
     { id: 'report', name: '报告', icon: '&#128196;', category: '法定公文', desc: '向上级汇报工作、反映情况、回复询问' },
@@ -21,18 +18,43 @@ const materialUploader = {
     { id: 'work-plan', name: '工作方案', icon: '&#128296;', category: '常见正式材料', desc: '专项行动、阶段性工作、项目推进' }
   ],
 
-  selectedDocType: null,
+  // 从持久化恢复会话
+  init() {
+    const session = dataStore.getSession();
+    this.materials = session.materials || [];
+    this.selectedDocType = session.selectedDocType || null;
+    this.searchQuery = '';
+    this.selectedMaterials = new Set();
+  },
+
+  // 保存会话
+  persist() {
+    const session = dataStore.getSession();
+    session.materials = this.materials;
+    session.selectedDocType = this.selectedDocType;
+    dataStore.saveSession(session);
+  },
 
   // 渲染上传页面
   renderUploadPage() {
     const hasMaterials = this.materials.length > 0;
     const selected = this.docTypes.find(d => d.id === this.selectedDocType);
+    const filteredMaterials = this.getFilteredMaterials();
 
     return `
       <div class="page-container">
         <div class="page-header">
           <h2>素材整合</h2>
+          ${hasMaterials ? `<span class="badge badge-info">已收集 ${this.materials.length} 份素材</span>` : ''}
         </div>
+
+        <!-- 会话状态提示 -->
+        ${this.materials.length > 0 ? `
+          <div class="session-bar">
+            <span>&#128214; 当前会话已保存，刷新页面不会丢失</span>
+            <button class="btn btn-sm btn-secondary" onclick="materialUploader.clearSession()">清空会话</button>
+          </div>
+        ` : ''}
 
         <!-- 第一步：选择公文格式 -->
         <div class="card step-card">
@@ -79,7 +101,7 @@ const materialUploader = {
             <div class="step-number">2</div>
             <div class="step-info">
               <h3>上传团队素材</h3>
-              <p>上传各成员的文字材料，支持 .txt、.md、.docx 格式</p>
+              <p>支持 .txt、.md、.docx 格式，支持拖拽上传</p>
             </div>
             ${!this.selectedDocType ? '<span class="badge badge-warn">请先选择公文格式</span>' : ''}
           </div>
@@ -95,43 +117,323 @@ const materialUploader = {
                 <strong>点击或拖拽上传素材</strong>
                 <p>支持 .txt、.md、.docx（自动提取纯文本）格式</p>
                 <p class="upload-hint">.docx 文件会自动提取文字内容，保留段落格式</p>
-                <p class="upload-hint">每份素材建议文件名包含作者姓名，如：01-张三-改革进展.txt</p>
+                <p class="upload-hint">建议文件名包含作者姓名，如：01-张三-改革进展.txt</p>
               </div>
               <input type="file" id="file-input" multiple accept=".txt,.md,.docx"
                      onchange="materialUploader.handleFileSelect(event)" hidden>
             </div>
-          ` : `
-            <div class="upload-zone disabled">
-              <div class="upload-icon">&#128274;</div>
-              <div class="upload-text">
-                <strong>请先在上方选择公文格式</strong>
-                <p>选择后即可上传素材</p>
-              </div>
-            </div>
-          `}
 
-          ${hasMaterials ? `
-            <div class="materials-section">
-              <h3>已收集素材 (${this.materials.length}份) — 将按「${selected.name}」格式处理</h3>
-              <div class="materials-list">
-                ${this.materials.map((m, i) => this.renderMaterialCard(m, i)).join('')}
-              </div>
-              <div class="materials-actions">
-                <button class="btn btn-danger" onclick="materialUploader.clearAll()">
-                  <span class="btn-icon">&#128465;</span> 清空全部
-                </button>
-                <button class="btn btn-primary" onclick="materialUploader.goToAlign()">
-                  <span class="btn-icon">&#128295;</span> 开始格式对齐
-                </button>
-              </div>
+            <!-- 加载指示器 -->
+            <div class="loading-indicator" id="upload-loading" style="display:none;">
+              <div class="spinner"></div>
+              <span>正在解析文件...</span>
             </div>
           ` : ''}
+
+          ${hasMaterials ? this.renderMaterialsSection(filteredMaterials, selected) : ''}
         </div>
       </div>
     `;
   },
 
-  // 获取模板章节
+  renderMaterialsSection(materials, selected) {
+    const hasSelection = this.selectedMaterials.size > 0;
+    return `
+      <div class="materials-section">
+        <div class="materials-toolbar">
+          <h3>已收集素材 (${materials.length}/${this.materials.length}份)</h3>
+          <div class="toolbar-right">
+            <!-- 搜索框 -->
+            <div class="search-box">
+              <input type="text"
+                     placeholder="搜索素材内容..."
+                     value="${this.searchQuery}"
+                     oninput="materialUploader.handleSearch(this.value)"
+                     onkeydown="if(event.key==='Enter') materialUploader.handleSearch(this.value)">
+              <span class="search-icon">&#128269;</span>
+            </div>
+            ${hasSelection ? `
+              <button class="btn btn-sm btn-danger" onclick="materialUploader.batchDelete()">
+                删除选中 (${this.selectedMaterials.size})
+              </button>
+            ` : ''}
+            <button class="btn btn-sm btn-danger" onclick="materialUploader.clearAll()">
+              <span class="btn-icon">&#128465;</span> 清空全部
+            </button>
+          </div>
+        </div>
+
+        ${this.searchQuery && materials.length === 0 ? `
+          <div class="empty-state">
+            <div class="empty-icon">&#128270;</div>
+            <p>未找到包含「${this.escapeHtml(this.searchQuery)}」的素材</p>
+          </div>
+        ` : `
+          <div class="materials-list">
+            ${materials.map((m, i) => this.renderMaterialCard(m, i)).join('')}
+          </div>
+        `}
+
+        <div class="materials-actions">
+          <button class="btn btn-primary" onclick="materialUploader.goToAlign()" ${materials.length === 0 ? 'disabled' : ''}>
+            <span class="btn-icon">&#128295;</span> 开始格式对齐
+          </button>
+        </div>
+      </div>
+    `;
+  },
+
+  getFilteredMaterials() {
+    if (!this.searchQuery) return this.materials;
+    const q = this.searchQuery.toLowerCase();
+    return this.materials.filter(m =>
+      m.text.toLowerCase().includes(q) ||
+      m.author.toLowerCase().includes(q) ||
+      m.filename.toLowerCase().includes(q)
+    );
+  },
+
+  handleSearch(query) {
+    this.searchQuery = query;
+    this.refreshPage();
+  },
+
+  // 渲染单个素材卡片（v2 增强：选中状态）
+  renderMaterialCard(material, index) {
+    const stats = this.analyzeMaterial(material);
+    const isSelected = this.selectedMaterials.has(index);
+    const searchHighlight = this.searchQuery
+      ? this.highlightSearch(material.text.substring(0, 200), this.searchQuery)
+      : material.text.substring(0, 200);
+
+    return `
+      <div class="material-card ${isSelected ? 'selected' : ''}" data-index="${index}">
+        <div class="material-header">
+          <label class="material-checkbox">
+            <input type="checkbox" ${isSelected ? 'checked' : ''}
+                   onchange="materialUploader.toggleSelect(${index})">
+          </label>
+          <div class="material-info">
+            <span class="material-num">#${index + 1}</span>
+            <span class="material-author">${material.author || '未识别作者'}</span>
+            <span class="material-filename">${material.filename}</span>
+          </div>
+          <div class="material-stats">
+            <span class="stat">${stats.wordCount} 字</span>
+            <span class="stat">${stats.paragraphCount} 段</span>
+            ${stats.hasTable ? '<span class="stat badge-table">含表格</span>' : ''}
+          </div>
+          <button class="btn-icon-only danger" onclick="materialUploader.removeMaterial(${index})" title="移除">&#128465;</button>
+        </div>
+        <div class="material-preview">
+          <details>
+            <summary>查看原文预览（${stats.wordCount} 字）</summary>
+            <pre class="material-text">${searchHighlight}${material.text.length > 200 ? '...' : ''}</pre>
+          </details>
+        </div>
+      </div>
+    `;
+  },
+
+  highlightSearch(text, query) {
+    if (!query) return text;
+    const regex = new RegExp(`(${query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
+    return text.replace(regex, '<mark>$1</mark>');
+  },
+
+  toggleSelect(index) {
+    if (this.selectedMaterials.has(index)) {
+      this.selectedMaterials.delete(index);
+    } else {
+      this.selectedMaterials.add(index);
+    }
+    this.refreshPage();
+  },
+
+  batchDelete() {
+    if (!confirm(`确定删除选中的 ${this.selectedMaterials.size} 份素材吗？`)) return;
+    const indices = Array.from(this.selectedMaterials).sort((a, b) => b - a);
+    indices.forEach(idx => this.materials.splice(idx, 1));
+    this.selectedMaterials.clear();
+    this.persist();
+    this.refreshPage();
+  },
+
+  // 清空会话
+  clearSession() {
+    if (!confirm('确定清空当前会话的所有素材吗？此操作不可撤销。')) return;
+    this.materials = [];
+    this.selectedDocType = null;
+    this.searchQuery = '';
+    this.selectedMaterials.clear();
+    dataStore.clearSession();
+    this.refreshPage();
+  },
+
+  // 其余方法保持不变...（selectDocType, processFiles, extractDocxText 等）
+
+  selectDocType(docTypeId) {
+    this.selectedDocType = docTypeId;
+    window.selectedDocType = docTypeId;
+    this.persist();
+    this.refreshPage();
+  },
+
+  handleDragOver(e) {
+    e.preventDefault();
+    e.currentTarget.classList.add('drag-over');
+  },
+
+  handleDragLeave(e) {
+    e.currentTarget.classList.remove('drag-over');
+  },
+
+  handleDrop(e) {
+    e.preventDefault();
+    e.currentTarget.classList.remove('drag-over');
+    const files = Array.from(e.dataTransfer.files);
+    this.processFiles(files);
+  },
+
+  handleFileSelect(e) {
+    const files = Array.from(e.target.files);
+    this.processFiles(files);
+  },
+
+  async processFiles(files) {
+    const loader = document.getElementById('upload-loading');
+    if (loader) loader.style.display = 'flex';
+
+    for (const file of files) {
+      const ext = file.name.split('.').pop().toLowerCase();
+      let text;
+
+      try {
+        if (ext === 'docx') {
+          text = await this.extractDocxText(file);
+        } else {
+          text = await this.readFileAsText(file);
+        }
+
+        const material = this.parseMaterial(file.name, text);
+        this.materials.push(material);
+        app.updateStatus(`已解析 ${file.name}`);
+      } catch (err) {
+        console.error('解析失败:', err);
+        app.updateStatus(`解析 ${file.name} 失败`);
+      }
+    }
+
+    if (loader) loader.style.display = 'none';
+    this.persist();
+    this.refreshPage();
+    app.updateStatus(`已上传 ${this.materials.length} 份素材`);
+  },
+
+  readFileAsText(file) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = (e) => resolve(e.target.result);
+      reader.onerror = (e) => reject(e);
+      reader.readAsText(file, 'UTF-8');
+    });
+  },
+
+  async extractDocxText(file) {
+    if (typeof JSZip === 'undefined') {
+      throw new Error('JSZip 库未加载，无法解析 .docx 文件');
+    }
+    const arrayBuffer = await file.arrayBuffer();
+    const zip = await JSZip.loadAsync(arrayBuffer);
+    const docXml = await zip.file('word/document.xml')?.async('string');
+    if (!docXml) throw new Error('无法找到 word/document.xml');
+
+    const parser = new DOMParser();
+    const xmlDoc = parser.parseFromString(docXml, 'application/xml');
+    const paragraphs = [];
+    const allNodes = xmlDoc.getElementsByTagName('*');
+
+    for (let i = 0; i < allNodes.length; i++) {
+      const node = allNodes[i];
+      if (node.tagName === 'w:p') {
+        const tNodes = node.getElementsByTagName('w:t');
+        let paraText = '';
+        for (let t of tNodes) paraText += t.textContent;
+        if (paraText.trim()) paragraphs.push(paraText.trim());
+      }
+    }
+    return paragraphs.join('\n\n');
+  },
+
+  parseMaterial(filename, text) {
+    const authorMatch = filename.match(/(?:\d+[-_])?(.+?)(?:[-_].+)?\.(txt|md|docx)$/i);
+    const author = authorMatch ? authorMatch[1].trim() : filename.replace(/\.[^.]+$/, '');
+
+    return {
+      id: 'mat-' + Date.now() + '-' + Math.random().toString(36).substr(2, 6),
+      filename: filename,
+      author: author,
+      text: text,
+      uploadedAt: new Date().toISOString(),
+      aligned: false,
+      alignedText: null,
+      keyPoints: null
+    };
+  },
+
+  analyzeMaterial(material) {
+    const text = material.text;
+    return {
+      wordCount: text.replace(/\s/g, '').length,
+      paragraphCount: text.split(/\n{2,}/).filter(p => p.trim()).length,
+      hasTable: /\|.*\|/.test(text) || /^表\d+/.test(text),
+      hasNumbers: /\d+\.?\d*/.test(text),
+      hasPolicyRef: /(国发|国办发|中发|中办发|〔\d{4}〕|第\d+号)/.test(text)
+    };
+  },
+
+  removeMaterial(index) {
+    this.materials.splice(index, 1);
+    this.selectedMaterials.delete(index);
+    // 重新索引选中状态
+    const newSelected = new Set();
+    this.selectedMaterials.forEach(idx => {
+      if (idx < index) newSelected.add(idx);
+      else if (idx > index) newSelected.add(idx - 1);
+    });
+    this.selectedMaterials = newSelected;
+    this.persist();
+    this.refreshPage();
+  },
+
+  clearAll() {
+    if (confirm('确定清空所有已上传素材吗？')) {
+      this.materials = [];
+      this.selectedMaterials.clear();
+      this.persist();
+      this.refreshPage();
+    }
+  },
+
+  refreshPage() {
+    const container = document.getElementById('app-container');
+    container.innerHTML = this.renderUploadPage();
+  },
+
+  goToAlign() {
+    if (this.materials.length === 0) {
+      alert('请先上传素材');
+      return;
+    }
+    if (!this.selectedDocType) {
+      alert('请先选择公文格式');
+      return;
+    }
+    window.currentMaterials = [...this.materials];
+    window.selectedDocType = this.selectedDocType;
+    app.navigate('align');
+  },
+
   getTemplateSections(docTypeId) {
     const sections = {
       presentation: [
@@ -197,204 +499,12 @@ const materialUploader = {
     return sections[docTypeId] || sections.presentation;
   },
 
-  // 选择文种
-  selectDocType(docTypeId) {
-    this.selectedDocType = docTypeId;
-    window.selectedDocType = docTypeId;
-    this.refreshPage();
-  },
-
-  // 渲染单个素材卡片
-  renderMaterialCard(material, index) {
-    const stats = this.analyzeMaterial(material);
-    return `
-      <div class="material-card" data-index="${index}">
-        <div class="material-header">
-          <div class="material-info">
-            <span class="material-num">#${index + 1}</span>
-            <span class="material-author">${material.author || '未识别作者'}</span>
-            <span class="material-filename">${material.filename}</span>
-          </div>
-          <div class="material-stats">
-            <span class="stat">${stats.wordCount} 字</span>
-            <span class="stat">${stats.paragraphCount} 段</span>
-            ${stats.hasTable ? '<span class="stat badge-table">含表格</span>' : ''}
-          </div>
-          <button class="btn-icon-only danger" onclick="materialUploader.removeMaterial(${index})" title="移除">&#128465;</button>
-        </div>
-        <div class="material-preview">
-          <details>
-            <summary>查看原文预览（前300字）</summary>
-            <pre class="material-text">${material.text.substring(0, 300)}${material.text.length > 300 ? '...' : ''}</pre>
-          </details>
-        </div>
-      </div>
-    `;
-  },
-
-  // 拖拽处理
-  handleDragOver(e) {
-    e.preventDefault();
-    e.currentTarget.classList.add('drag-over');
-  },
-  handleDragLeave(e) {
-    e.currentTarget.classList.remove('drag-over');
-  },
-  handleDrop(e) {
-    e.preventDefault();
-    e.currentTarget.classList.remove('drag-over');
-    const files = Array.from(e.dataTransfer.files);
-    this.processFiles(files);
-  },
-
-  // 文件选择处理
-  handleFileSelect(e) {
-    const files = Array.from(e.target.files);
-    this.processFiles(files);
-  },
-
-  // 处理文件列表（支持 .txt/.md 和 .docx）
-  async processFiles(files) {
-    for (const file of files) {
-      const ext = file.name.split('.').pop().toLowerCase();
-      let text;
-
-      if (ext === 'docx') {
-        try {
-          text = await this.extractDocxText(file);
-        } catch (err) {
-          app.updateStatus(`解析 ${file.name} 失败: ${err.message}`);
-          text = `[无法解析文件 ${file.name}，请转换为 .txt 格式后重试]`;
-        }
-      } else {
-        text = await this.readFileAsText(file);
-      }
-
-      const material = this.parseMaterial(file.name, text);
-      this.materials.push(material);
-    }
-
-    app.updateStatus(`已上传 ${this.materials.length} 份素材`);
-    this.refreshPage();
-  },
-
-  // 读取文件为文本（Promise 封装）
-  readFileAsText(file) {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onload = (e) => resolve(e.target.result);
-      reader.onerror = (e) => reject(e);
-      reader.readAsText(file, 'UTF-8');
-    });
-  },
-
-  // 提取 .docx 文件中的纯文本
-  async extractDocxText(file) {
-    if (typeof JSZip === 'undefined') {
-      throw new Error('JSZip 库未加载，无法解析 .docx 文件');
-    }
-
-    const arrayBuffer = await file.arrayBuffer();
-    const zip = await JSZip.loadAsync(arrayBuffer);
-
-    // 读取 word/document.xml
-    const docXml = await zip.file('word/document.xml')?.async('string');
-    if (!docXml) {
-      throw new Error('无法找到 word/document.xml');
-    }
-
-    // 解析 XML 提取文本
-    const parser = new DOMParser();
-    const xmlDoc = parser.parseFromString(docXml, 'application/xml');
-
-    // docx 的文本在 <w:t> 标签中
-    const textNodes = xmlDoc.getElementsByTagName('w:t');
-    let paragraphs = [];
-    let currentPara = '';
-
-    // 需要同时检查 <w:p> 段落标记来确定换行
-    const allNodes = xmlDoc.getElementsByTagName('*');
-    for (let i = 0; i < allNodes.length; i++) {
-      const node = allNodes[i];
-      if (node.tagName === 'w:p') {
-        // 段落结束，收集该段落的文本
-        const tNodes = node.getElementsByTagName('w:t');
-        let paraText = '';
-        for (let t of tNodes) {
-          paraText += t.textContent;
-        }
-        if (paraText.trim()) {
-          paragraphs.push(paraText.trim());
-        }
-      }
-    }
-
-    return paragraphs.join('\n\n');
-  },
-
-  // 解析单份素材
-  parseMaterial(filename, text) {
-    // 尝试从文件名提取作者
-    const authorMatch = filename.match(/(?:\d+[-_])?(.+?)(?:[-_].+)?\.(txt|md|docx)$/i);
-    const author = authorMatch ? authorMatch[1].trim() : filename.replace(/\.[^.]+$/, '');
-
-    return {
-      id: 'mat-' + Date.now() + '-' + Math.random().toString(36).substr(2, 6),
-      filename: filename,
-      author: author,
-      text: text,
-      uploadedAt: new Date().toISOString(),
-      aligned: false,
-      alignedText: null,
-      keyPoints: null
-    };
-  },
-
-  // 分析素材统计
-  analyzeMaterial(material) {
-    const text = material.text;
-    return {
-      wordCount: text.replace(/\s/g, '').length,
-      paragraphCount: text.split(/\n{2,}/).filter(p => p.trim()).length,
-      hasTable: /\|.*\|/.test(text) || /^表\d+/.test(text),
-      hasNumbers: /\d+\.?\d*/.test(text),
-      hasPolicyRef: /(国发|国办发|中发|中办发|〔\d{4}〕|第\d+号)/.test(text)
-    };
-  },
-
-  // 移除单个素材
-  removeMaterial(index) {
-    this.materials.splice(index, 1);
-    this.refreshPage();
-  },
-
-  // 清空全部
-  clearAll() {
-    if (confirm('确定清空所有已上传素材吗？')) {
-      this.materials = [];
-      this.refreshPage();
-    }
-  },
-
-  // 刷新页面
-  refreshPage() {
-    const container = document.getElementById('app-container');
-    container.innerHTML = this.renderUploadPage();
-  },
-
-  // 进入格式对齐页面
-  goToAlign() {
-    if (this.materials.length === 0) {
-      alert('请先上传素材');
-      return;
-    }
-    if (!this.selectedDocType) {
-      alert('请先选择公文格式');
-      return;
-    }
-    // 存储到全局，供对齐页面使用
-    window.currentMaterials = [...this.materials];
-    window.selectedDocType = this.selectedDocType;
-    app.navigate('align');
+  escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
   }
 };
+
+// 页面加载时恢复会话
+materialUploader.init();
