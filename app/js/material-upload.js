@@ -25,6 +25,7 @@ const materialUploader = {
     this.selectedDocType = session.selectedDocType || null;
     this.searchQuery = '';
     this.selectedMaterials = new Set();
+    this.currentCarouselIndex = 0;
   },
 
   // 保存会话
@@ -138,6 +139,11 @@ const materialUploader = {
 
   renderMaterialsSection(materials, selected) {
     const hasSelection = this.selectedMaterials.size > 0;
+    const total = materials.length;
+    // 限制当前索引不越界
+    if (this.currentCarouselIndex >= total) this.currentCarouselIndex = Math.max(0, total - 1);
+    const currentIndex = this.currentCarouselIndex;
+
     return `
       <div class="materials-section">
         <div class="materials-toolbar">
@@ -169,8 +175,12 @@ const materialUploader = {
             <p>未找到包含「${this.escapeHtml(this.searchQuery)}」的素材</p>
           </div>
         ` : `
+          ${total > 1 ? this.renderMaterialCarousel(materials, currentIndex) : ''}
           <div class="materials-list">
-            ${materials.map((m, i) => this.renderMaterialCard(m, i)).join('')}
+            ${total > 1
+              ? this.renderMaterialCard(materials[currentIndex], this.materials.indexOf(materials[currentIndex]))
+              : materials.map((m, i) => this.renderMaterialCard(m, i)).join('')
+            }
           </div>
         `}
 
@@ -181,6 +191,42 @@ const materialUploader = {
         </div>
       </div>
     `;
+  },
+
+  renderMaterialCarousel(materials, currentIndex) {
+    const actualIndex = this.materials.indexOf(materials[currentIndex]);
+    const total = materials.length;
+    return `
+      <div class="material-carousel">
+        <div class="carousel-controls">
+          <button class="carousel-btn" onclick="materialUploader.navigateCarousel(-1)"
+                  ${currentIndex <= 0 ? 'disabled' : ''} title="上一个素材">&#9664;</button>
+          <div class="carousel-counter">
+            <span class="carousel-current">${currentIndex + 1}</span>
+            <span class="carousel-sep">/</span>
+            <span class="carousel-total">${total}</span>
+          </div>
+          <button class="carousel-btn" onclick="materialUploader.navigateCarousel(1)"
+                  ${currentIndex >= total - 1 ? 'disabled' : ''} title="下一个素材">&#9654;</button>
+          <div class="carousel-slider-wrap">
+            <input type="range" class="carousel-slider" min="1" max="${total}" value="${currentIndex + 1}"
+                   oninput="materialUploader.jumpToMaterial(parseInt(this.value) - 1)">
+          </div>
+          <span class="carousel-label">素材 ${currentIndex + 1} / ${total}，共 ${this.materials.length} 份</span>
+        </div>
+      </div>
+    `;
+  },
+
+  navigateCarousel(direction) {
+    const filtered = this.getFilteredMaterials();
+    this.currentCarouselIndex = Math.max(0, Math.min(filtered.length - 1, this.currentCarouselIndex + direction));
+    this.refreshPage();
+  },
+
+  jumpToMaterial(index) {
+    this.currentCarouselIndex = index;
+    this.refreshPage();
   },
 
   getFilteredMaterials() {

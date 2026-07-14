@@ -116,7 +116,7 @@ const mergeEngine = {
     return scores;
   },
 
-  // 后处理：修正分类异常
+  // 后处理：修正分类异常（v3增强：更多智能规则）
   postProcessClassification(classified, template) {
     // 规则1：如果一段被分到"其他"，但其前后相邻段都属于同一章节，则跟随
     for (let i = 1; i < classified.length - 1; i++) {
@@ -124,11 +124,9 @@ const mergeEngine = {
         const prev = classified[i - 1];
         const next = classified[i + 1];
         if (prev.assignedSection === next.assignedSection && prev.assignedSection !== 'uncategorized') {
-          // 检查这段本身是否有强烈信号反对这个分类
           const scores = classified[i].allScores;
           const targetScore = scores.find(s => s.sectionId === prev.assignedSection);
           const uncategorizedScore = scores.find(s => s.sectionId === 'uncategorized');
-          // 如果"其他"的分数没有显著高于目标章节，就跟随
           if (!uncategorizedScore || !targetScore || uncategorizedScore.score - targetScore.score < 0.2) {
             classified[i].assignedSection = prev.assignedSection;
             classified[i].assignedTitle = prev.assignedTitle;
@@ -166,9 +164,69 @@ const mergeEngine = {
         }
       }
     }
+
+    // 规则4（v3新增）：以"根据/按照/为"开头的段落，强制归为背景
+    for (let i = 0; i < classified.length; i++) {
+      const para = classified[i].text;
+      if (/^[\[（(]?\s*(根据|按照|遵照|依据|为|鉴于|为了)\s*/.test(para)) {
+        const bgSection = template.structure.sections.find(s =>
+          s.id === 'background' || s.id === 'purpose' || s.id === 'overview'
+        );
+        if (bgSection) {
+          const scores = classified[i].allScores;
+          const bgScore = scores.find(s => s.sectionId === bgSection.id);
+          const currentScore = scores.find(s => s.sectionId === classified[i].assignedSection);
+          // 只有当当前分类不是背景时，且背景分数不显著低于当前分数时才修正
+          if (classified[i].assignedSection !== bgSection.id) {
+            if (!currentScore || !bgScore || currentScore.score - bgScore.score < 0.3) {
+              classified[i].assignedSection = bgSection.id;
+              classified[i].assignedTitle = bgSection.title;
+            }
+          }
+        }
+      }
+    }
+
+    // 规则5（v3新增）：以"下一步/今后"开头的段落，强制归为计划
+    for (let i = 0; i < classified.length; i++) {
+      const para = classified[i].text;
+      if (/^(下一步|今后|拟|接下来|未来|下一步将|今后将)/.test(para)) {
+        const planSection = template.structure.sections.find(s =>
+          s.id === 'plans' || s.id === 'closing'
+        );
+        if (planSection && classified[i].assignedSection !== planSection.id) {
+          const scores = classified[i].allScores;
+          const planScore = scores.find(s => s.sectionId === planSection.id);
+          const currentScore = scores.find(s => s.sectionId === classified[i].assignedSection);
+          if (!currentScore || !planScore || currentScore.score - planScore.score < 0.3) {
+            classified[i].assignedSection = planSection.id;
+            classified[i].assignedTitle = planSection.title;
+          }
+        }
+      }
+    }
+
+    // 规则6（v3新增）：连续段落章节平滑
+    // 如果一段的左右邻居都是同一章节，且该段分数接近，则跟随邻居
+    for (let i = 1; i < classified.length - 1; i++) {
+      const prev = classified[i - 1];
+      const next = classified[i + 1];
+      if (prev.assignedSection === next.assignedSection &&
+          prev.assignedSection !== 'uncategorized' &&
+          classified[i].assignedSection !== prev.assignedSection) {
+        // 检查当前段与邻居段的分数差距
+        const scores = classified[i].allScores;
+        const neighborScore = scores.find(s => s.sectionId === prev.assignedSection);
+        const currentScore = scores.find(s => s.sectionId === classified[i].assignedSection);
+        if (neighborScore && currentScore && currentScore.score - neighborScore.score < 0.15) {
+          classified[i].assignedSection = prev.assignedSection;
+          classified[i].assignedTitle = prev.assignedTitle;
+        }
+      }
+    }
   },
 
-  // 计算段落与章节的匹配分数（v2增强：带上下文感知）
+  // 计算段落与章节的匹配分数（v3增强：语义模式识别+上下文增强）
   scoreParagraph(para, idx, total, sectionId, sectionTitle, allParagraphs) {
     const lower = para.toLowerCase();
     let score = 0;
@@ -182,16 +240,15 @@ const mergeEngine = {
       return sectionId === 'uncategorized' ? 0.6 : 0.01;
     }
 
-    // ===== 关键词库 v2（大幅扩充） =====
+    // ===== 关键词库 v3（复合短语模式匹配） =====
     const keywordMap = {
-      // 汇报材料 / 报告 / 总结 / 简报
       background: {
-        strong: ['背景', '根据', '按照', '为贯彻落实', '根据...精神', '遵照', '依据', '在...领导下', '近年来', '2024年', '2025年', '本轮', '启动', '以来', '概况', '概述', '简介', '前言', '为深入', '为全面', '为切实', '为认真', '按照党中央', '按照上级', '按照省委', '按照市委', '按照县委', '根据上级', '根据安排', '根据部署', '按照要求'],
-        medium: ['公司', '集团', '单位', '企业', '改革', '工作', '推进', '开展', '部署', '落实', '贯彻', '执行', '实施', '组织', '单位简介', '基本情况'],
+        strong: ['背景', '根据', '按照', '为贯彻落实', '遵照', '依据', '在...领导下', '近年来', '本轮', '启动', '以来', '概况', '概述', '简介', '前言', '为深入', '为全面', '为切实', '为认真', '按照党中央', '按照上级', '按照省委', '按照市委', '按照县委', '根据上级', '根据安排', '根据部署', '按照要求', '单位简介', '基本情况'],
+        medium: ['公司', '集团', '单位', '企业', '改革', '工作', '推进', '开展', '部署', '落实', '贯彻', '执行', '实施', '组织', '成立', '设立', '组建'],
         weak: []
       },
       practices: {
-        strong: ['建立了', '完善了', '推进了', '开展了', '实施了', '加强了', '优化了', '健全了', '构建了', '形成了', '出台了', '制定了', '印发了', '组织了', '成立了', '实现了', '落实了', '强化了', '深化了', '推行了', '推广了', '建立了...机制', '完善了...制度', '创新了', '探索了', '试点了', '率先', '首创', '率先开展', '积极探索', '大胆创新'],
+        strong: ['建立了', '完善了', '推进了', '开展了', '实施了', '加强了', '优化了', '健全了', '构建了', '形成了', '出台了', '制定了', '印发了', '组织了', '成立了', '实现了', '落实了', '强化了', '深化了', '推行了', '推广了', '创新了', '探索了', '试点了', '率先', '首创', '率先开展', '积极探索', '大胆创新'],
         medium: ['措施', '举措', '做法', '经验', '机制', '体系', '制度', '方案', '计划', '安排', '行动', '专项', '重点', '抓手', '突破口', '切入点', '着力点', '落脚点'],
         weak: ['股权', '治理', '董事会', '监事会', '党委', '三项制度', '混改', '重组', '并购', '上市', '融资', '投资']
       },
@@ -265,19 +322,28 @@ const mergeEngine = {
     const kw = keywordMap[sectionId];
     if (!kw) return 0.05;
 
-    // 关键词匹配分数
+    // ===== 关键词匹配分数 =====
     kw.strong.forEach(k => { if (lower.includes(k)) score += 0.35; });
     kw.medium.forEach(k => { if (lower.includes(k)) score += 0.2; });
     kw.weak.forEach(k => { if (lower.includes(k)) score += 0.1; });
 
-    // 位置特征（仅适用于有顺序逻辑的章节）
-    if (sectionId === 'background' && idx === 0) score += 0.2;
+    // ===== 复合短语模式匹配（v3新增：语义模式识别） =====
+    const compoundPatterns = this.getCompoundPatterns(sectionId);
+    compoundPatterns.forEach(pattern => {
+      if (pattern.test(para)) score += 0.4;
+    });
+
+    // ===== 位置特征（增强版） =====
+    if (sectionId === 'background' && idx === 0) score += 0.25;
+    if (sectionId === 'background' && idx <= 1) score += 0.15;
     if (sectionId === 'plans' && idx >= total - 2) score += 0.2;
     if (sectionId === 'closing' && idx >= total - 1) score += 0.25;
     if (sectionId === 'opening' && idx === 0) score += 0.25;
     if (sectionId === 'requirements' && idx >= total - 1) score += 0.15;
+    if (sectionId === 'overview' && idx <= 1) score += 0.15;
+    if (sectionId === 'purpose' && idx <= 1) score += 0.15;
 
-    // 内容特征
+    // ===== 内容特征（增强版） =====
     // 含大量数字 → 更可能是成效
     if (sectionId === 'achievements') {
       const numCount = (para.match(/\d/g) || []).length;
@@ -293,12 +359,153 @@ const mergeEngine = {
     if ((sectionId === 'practices' || sectionId === 'tasks') && /^\s*[（(]?[一二三四五六七八九十\d]+[)）]?[、.．\s]/.test(para)) score += 0.15;
     if (sectionId === 'plans' && /^\s*[（(]?[一二三四五六七八九十\d]+[)）]?[、.．\s]/.test(para)) score += 0.12;
 
-    // 上下文感知：如果前后段都属于某章节，增加该章节分数
+    // ===== 段落开头特征检测（v3新增） =====
+    // 以"根据/按照/为/遵照"开头的段落，大概率是背景
+    if (sectionId === 'background' && /^[\[（(]?\s*(根据|按照|遵照|依据|为|鉴于|为了)\s*/.test(para)) score += 0.3;
+    // 以"近年来/2024年/今年来"开头的段落，很可能也是背景
+    if (sectionId === 'background' && /^(近年来|近几年来|202\d年|今年|今年以来|去年来|两年来)/.test(para)) score += 0.25;
+    // 以"但是/然而/不过/但"开头的段落，很可能是问题
+    if (sectionId === 'problems' && /^[\[（(]?\s*(但是|然而|不过|但|尽管如此|虽然如此)/.test(para)) score += 0.3;
+    // 以"下一步/今后/拟/将"开头的段落，很可能是计划
+    if (sectionId === 'plans' && /^(下一步|今后|拟|接下来|未来|下一步将|今后将)/.test(para)) score += 0.35;
+
+    // ===== 上下文感知（v3增强） =====
     if (allParagraphs && allParagraphs.length > 1) {
-      // 这个需要在 postProcess 中处理，这里只给基础分数
+      // 检查前后段的关键词倾向
+      const contextScores = this.getContextScore(idx, total, sectionId, allParagraphs);
+      score += contextScores;
     }
 
     return score;
+  },
+
+  // v3新增：复合短语模式 - 匹配更长的公文常见表述
+  getCompoundPatterns(sectionId) {
+    const patterns = {
+      background: [
+        /根据[《\u300a][^》\u300b]+[》\u300b](精神|要求|部署|规定|通知|意见|方案|决定)/,
+        /按照[《\u300a][^》\u300b]+[》\u300b](精神|要求|部署|规定|通知|意见|方案|决定)/,
+        /为贯彻落实.*?精神/,
+        /为深入贯彻.*?决策部署/,
+        /为全面.*?工作/,
+        /遵照.*?指示/,
+        /依据.*?规定/,
+        /在.*?领导下/,
+        /收悉.*?来函/,
+        /根据.*?安排/,
+        /按照.*?要求/,
+        /根据.*?部署/
+      ],
+      practices: [
+        /一是|二是|三是|四是|五是|六是/,
+        /主要做法|主要举措|主要措施|主要经验|关键举措/,
+        /\u3000[一二三四五六七八九十]+[、.．]/,
+        /坚持.*?原则/,
+        /突出.*?重点/,
+        /强化.*?保障/,
+        /注重.*?结合/,
+        /围绕.*?主线/
+      ],
+      achievements: [
+        /同比增长|环比增长|较上年|与上年相比/,
+        /完成.*?指标/,
+        /实现.*?目标/,
+        /达到.*?水平/,
+        /突破.*?大关/,
+        /累计.*?[万亿千万]/,
+        /覆盖率达|完成率|满意率|合格率|通过率/
+      ],
+      problems: [
+        /存在.*?问题/,
+        /面临.*?挑战/,
+        /存在.*?不足/,
+        /存在.*?短板/,
+        /存在.*?差距/,
+        /有待.*?提高|有待.*?加强|有待.*?完善/,
+        /亟需|亟待|仍存在|还存在/
+      ],
+      plans: [
+        /下一步.*?将|下一步.*?要|下一步.*?打算/,
+        /重点抓好|重点推进|重点做好|重点围绕/,
+        /着力.*?提升|着力.*?推进|着力.*?加强/,
+        /持续.*?深化|持续.*?推进|持续.*?加强/,
+        /力争.*?实现|确保.*?完成|确保.*?实现/
+      ]
+    };
+    return patterns[sectionId] || [];
+  },
+
+  // v3新增：上下文感知评分
+  getContextScore(idx, total, sectionId, allParagraphs) {
+    let contextScore = 0;
+    if (total <= 1) return 0;
+
+    // 检查前一段
+    if (idx > 0) {
+      const prev = allParagraphs[idx - 1];
+      const prevLower = prev.toLowerCase();
+      // 如果前一段包含该章节的关键词，增加当前段的分数
+      const kw = this.getKeywordMap();
+      const sectionKw = kw[sectionId];
+      if (sectionKw) {
+        const hasStrong = sectionKw.strong.some(k => prevLower.includes(k));
+        // 前一段有强关键词，当前段也有可能属于同一章节
+        if (hasStrong) contextScore += 0.1;
+      }
+    }
+
+    // 检查后一段
+    if (idx < total - 1) {
+      const next = allParagraphs[idx + 1];
+      const nextLower = next.toLowerCase();
+      const kw = this.getKeywordMap();
+      const sectionKw = kw[sectionId];
+      if (sectionKw) {
+        const hasStrong = sectionKw.strong.some(k => nextLower.includes(k));
+        // 后一段有强关键词，当前段也有可能属于同一章节
+        if (hasStrong) contextScore += 0.08;
+      }
+    }
+
+    // 在同类型段落中（被其他段落包围），加分
+    if (idx > 0 && idx < total - 1) {
+      const prev = allParagraphs[idx - 1].toLowerCase();
+      const next = allParagraphs[idx + 1].toLowerCase();
+      const kw = this.getKeywordMap();
+      const sectionKw = kw[sectionId];
+      if (sectionKw) {
+        const prevHas = sectionKw.strong.some(k => prev.includes(k)) || sectionKw.medium.some(k => prev.includes(k));
+        const nextHas = sectionKw.strong.some(k => next.includes(k)) || sectionKw.medium.some(k => next.includes(k));
+        if (prevHas && nextHas) contextScore += 0.15;
+      }
+    }
+
+    return contextScore;
+  },
+
+  getKeywordMap() {
+    return {
+      background: {
+        strong: ['背景', '根据', '按照', '为贯彻落实', '遵照', '依据', '在...领导下', '近年来', '本轮', '启动', '以来', '概况', '概述', '简介', '前言', '为深入', '为全面', '为切实', '为认真', '按照党中央', '按照上级', '按照省委', '按照市委', '按照县委', '根据上级', '根据安排', '根据部署', '按照要求', '单位简介', '基本情况'],
+        medium: ['公司', '集团', '单位', '企业', '改革', '工作', '推进', '开展', '部署', '落实', '贯彻', '执行', '实施', '组织', '成立', '设立', '组建']
+      },
+      practices: {
+        strong: ['建立了', '完善了', '推进了', '开展了', '实施了', '加强了', '优化了', '健全了', '构建了', '形成了', '出台了', '制定了', '印发了', '组织了', '成立了', '实现了', '落实了', '强化了', '深化了', '推行了', '推广了', '创新了', '探索了', '试点了', '率先', '首创', '率先开展', '积极探索', '大胆创新'],
+        medium: ['措施', '举措', '做法', '经验', '机制', '体系', '制度', '方案', '计划', '安排', '行动', '专项', '重点', '抓手', '突破口', '切入点', '着力点', '落脚点']
+      },
+      achievements: {
+        strong: ['达到', '实现', '增长', '提高', '降低', '减少', '增加', '完成', '覆盖率达到', '完成率', '满意率', '占比为', '均达', '均超', '突破', '超额', '位居', '排名', '累计', '共计', '同比增长', '环比下降', '上升', '提升', '扩大', '缩小', '优化', '改善', '荣获', '获评', '被表彰', '被命名为', '被评为'],
+        medium: ['成效', '成果', '效益', '业绩', '指标', '数据', '统计', '同比', '环比', '较上年', '与上年相比', '相比去年同期', '排名', '位次', '前列']
+      },
+      problems: {
+        strong: ['问题', '不足', '困难', '挑战', '短板', '弱项', '瓶颈', '滞后', '滞后于', '偏弱', '不均衡', '不平衡', '不充足', '不充分', '不到位', '有待', '亟需', '亟待', '尚未', '还没有', '不够', '不严', '不实', '不深', '不细', '不全', '不紧', '不牢'],
+        medium: ['但是', '然而', '不过', '尽管', '虽然', '仍存在', '还存在', '仍然', '依然', '同时也应看到', '但必须清醒认识到', '但也要看到']
+      },
+      plans: {
+        strong: ['下一步', '下一步将', '今后', '今后将', '未来将', '下一步要', '拟', '计划', '规划', '方案', '部署', '安排', '要', '将', '需', '须', '应', '应当', '务必', '力争', '确保', '力争在', '确保在', '打算', '拟于', '拟在'],
+        medium: ['继续', '持续', '深化', '加强', '完善', '推进', '优化', '提升', '强化', '落实', '进一步', '不断', '着力', '切实', '狠抓', '紧盯', '聚焦', '围绕', '紧扣', '着眼', '立足', '对标', '对表']
+      }
+    };
   },
 
   // ========== 3. 关键点检测（v2增强：扩充检测项） ==========

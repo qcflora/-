@@ -127,12 +127,12 @@ const alignView = {
         </details>
 
         <!-- 格式检测报告 -->
-        ${this.renderComplianceReport(material)}
+        ${this.renderComplianceReport(material, index)}
       </div>
     `;
   },
 
-  renderComplianceReport(material) {
+  renderComplianceReport(material, materialIndex) {
     const kp = material.keyPoints;
     if (!kp || kp.total === 0) return '';
 
@@ -153,16 +153,87 @@ const alignView = {
           <span class="report-toggle">&#9662;</span>
         </div>
         <div class="report-body">
-          ${displayPoints.map(p => `
-            <div class="report-item ${p.severity}">
+          ${displayPoints.map((p, pi) => {
+            const fixable = this.isFixable(p);
+            return `
+            <div class="report-item ${p.severity} ${fixable ? 'fixable' : ''}">
               <span class="report-severity ${p.severity}">${p.severity === 'warning' ? '注意' : '提示'}</span>
               <span class="report-message">${p.message}</span>
+              ${fixable ? `<button class="btn btn-xs btn-success fix-btn" onclick="alignView.applyFix(${materialIndex}, ${pi})" title="一键修复此问题">&#10003; 一键修复</button>` : ''}
             </div>
-          `).join('')}
-          ${remaining > 0 ? `<div class="report-more">还有 ${remaining} 项提示，详见导出的检测详情</div>` : ''}
+          `}).join('')}
+          ${remaining > 0 ? `<div class="report-more">还有 ${remaining} 项提示，可展开查看更多</div>` : ''}
         </div>
       </div>
     `;
+  },
+
+  isFixable(point) {
+    // 可自动修复的检测项
+    if (point.type === 'format') return true; // 标点前后空格
+    if (point.type === 'oral') return true;   // 口语化表达
+    if (point.type === 'verify') return true; // 待核实标记
+    return false;
+  },
+
+  applyFix(materialIndex, pointIndex) {
+    const material = this.alignedMaterials[materialIndex];
+    if (!material || !material.keyPoints) return;
+
+    const point = material.keyPoints.points[pointIndex];
+    if (!point) return;
+
+    let fixedText = material.alignedText;
+    let fixed = false;
+
+    if (point.type === 'format') {
+      // 格式问题：移除标点前后的空格
+      if (point.category === '标点前置空格') {
+        fixedText = fixedText.replace(/\s+([，。、；：！？""''（）])/g, '$1');
+        fixed = true;
+      } else if (point.category === '标点后置空格') {
+        fixedText = fixedText.replace(/([，。、；：！？""''（）])\s+/g, '$1');
+        fixed = true;
+      }
+    } else if (point.type === 'oral') {
+      // 口语化表达：替换为正式的公文用语
+      const msg = point.message;
+      // 从消息中提取建议项，如"建议改为"开展""推进""落实"" → 取第一个"开展"
+      const suggestionMatch = msg.match(/建议改为[""「」](.+?)[""」]/);
+      if (suggestionMatch) {
+        const formal = suggestionMatch[1].split('"').filter(s => s.trim())[0];
+        if (formal) {
+          fixedText = fixedText.replace(new RegExp(this.escapeRegex(point.text), 'g'), formal);
+          fixed = true;
+        }
+      }
+    } else if (point.type === 'verify') {
+      // 待核实标记：移除标记文字
+      fixedText = fixedText.replace(new RegExp(this.escapeRegex(point.text), 'g'), '');
+      fixed = true;
+    }
+
+    if (fixed) {
+      material.alignedText = fixedText;
+      // 重新检测关键点和重组
+      const newKeyPoints = mergeEngine.detectKeyPoints(fixedText, material.author);
+      material.keyPoints = newKeyPoints;
+      const docType = window.selectedDocType || materialUploader.selectedDocType || 'presentation';
+      material.restructured = mergeEngine.restructureMaterial({ ...material, alignedText: fixedText }, docType);
+      // 更新全局
+      window.currentMaterials = this.alignedMaterials;
+      this.refreshPage();
+      app.updateStatus('已修复 1 项格式问题');
+    }
+  },
+
+  escapeRegex(str) {
+    return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  },
+
+  refreshPage() {
+    const container = document.getElementById('app-container');
+    container.innerHTML = this.renderAlignPage();
   },
 
   // 生成带章节标注的原文（每段前加 [栏目名]）
