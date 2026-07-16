@@ -4,7 +4,10 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>公文整合助手</title>
-  <link rel="stylesheet" href="css/main.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/main.css?v=3">
   <link rel="stylesheet" href="css/editor.css">
   <link rel="stylesheet" href="css/print.css" media="print">
   <!-- 第三方库 -->
@@ -15,45 +18,58 @@
   <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
 </head>
 <body>
-  <!-- 顶部导航栏 -->
-  <nav id="navbar">
-    <div class="nav-brand">
-      <span class="logo-icon">&#128196;</span>
-      <span class="logo-text">公文整合助手</span>
-    </div>
-    <div class="nav-tabs">
-      <button class="nav-tab active" data-page="projects" onclick="app.navigate('projects')">
-        <span class="tab-icon">&#128193;</span> 项目列表
-      </button>
-      <button class="nav-tab" data-page="chatpaste" onclick="app.navigate('chatpaste')">
-        <span class="tab-icon">&#129302;</span> 对话粘贴
-      </button>
-      <button class="nav-tab" data-page="upload" onclick="app.navigate('upload')">
-        <span class="tab-icon">&#128228;</span> 素材整合
-      </button>
-      <button class="nav-tab" data-page="templates" onclick="app.navigate('templates')">
-        <span class="tab-icon">&#128220;</span> 模板库
-      </button>
-      <button class="nav-tab" data-page="settings" onclick="app.navigate('settings')">
-        <span class="tab-icon">&#9881;</span> 设置
-      </button>
-    </div>
-    <div class="nav-actions">
-      <input type="file" id="import-json-input" accept=".json" hidden onchange="jsonImporter.handleImport(event)">
-      <button class="btn btn-primary" onclick="document.getElementById('import-json-input').click()">
-        <span class="btn-icon">&#8593;</span> 导入 JSON
-      </button>
-    </div>
-  </nav>
+  <div id="app">
+    <!-- 左侧深紫色侧边栏 -->
+    <aside id="navbar" class="sidebar">
+      <!-- 品牌区 -->
+      <div class="nav-brand">
+        <span class="logo-icon">&#128196;</span>
+        <span class="logo-text">公文整合助手</span>
+      </div>
 
-  <!-- 主内容区 -->
-  <main id="app-container"></main>
+      <!-- 导航菜单 -->
+      <nav class="nav-tabs">
+        <button class="nav-tab active" data-page="projects" onclick="app.navigate('projects')">
+          <span class="tab-icon">&#128193;</span> <span class="tab-label">项目列表</span>
+        </button>
+        <button class="nav-tab" data-page="chatpaste" onclick="app.navigate('chatpaste')">
+          <span class="tab-icon">&#129302;</span> <span class="tab-label">对话粘贴</span>
+        </button>
+        <button class="nav-tab" data-page="upload" onclick="app.navigate('upload')">
+          <span class="tab-icon">&#128228;</span> <span class="tab-label">素材整合</span>
+        </button>
+        <button class="nav-tab" data-page="templates" onclick="app.navigate('templates')">
+          <span class="tab-icon">&#128220;</span> <span class="tab-label">模板库</span>
+        </button>
+        <button class="nav-tab" data-page="settings" onclick="app.navigate('settings')">
+          <span class="tab-icon">&#9881;</span> <span class="tab-label">设置</span>
+        </button>
+      </nav>
 
-  <!-- 底部状态栏 -->
-  <footer id="statusbar">
-    <span id="status-text">就绪</span>
-    <span id="status-version">v1.0</span>
-  </footer>
+      <!-- 底部操作 -->
+      <div class="nav-actions">
+        <input type="file" id="import-json-input" accept=".json" hidden onchange="jsonImporter.handleImport(event)">
+        <button class="btn btn-primary" onclick="document.getElementById('import-json-input').click()">
+          <span class="btn-icon">&#8593;</span> 导入 JSON
+        </button>
+      </div>
+    </aside>
+
+    <!-- 右侧主区域 -->
+    <div class="main-area">
+      <!-- 顶部栏 -->
+      <header class="topbar">
+        <div class="topbar-left"></div>
+        <div class="topbar-right">
+          <span id="status-text" class="topbar-status">就绪</span>
+          <span id="status-version" class="topbar-version">v1.0</span>
+        </div>
+      </header>
+
+      <!-- 主内容滚动区 -->
+      <main id="app-container" class="main-content"></main>
+    </div>
+  </div>
 
   <!-- JS 模块 -->
   <script src="js/data-store.js"></script>

@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>公文整合助手 - 在线体验</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700;900&family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --ink: #1a1a2e;
+      --vermilion: #c0392b;
+      --vermilion-dark: #962d22;
+      --gold: #d4a84b;
+      --gold-light: #f0dca0;
+      --paper: #faf6ef;
+      --paper-dark: #f0ead8;
+      --border: #d4c9b0;
+      --muted: #8a7e6b;
+      --shadow: 0 4px 24px rgba(26,26,46,0.08);
+      --shadow-lg: 0 12px 48px rgba(26,26,46,0.12);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Noto Sans SC', sans-serif;
+      background: var(--paper);
+      color: var(--ink);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* ===== Hero ===== */
+    .hero {
+      position: relative;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 60px 24px;
+      background:
+        radial-gradient(ellipse 80% 60% at 50% 40%, rgba(212,168,75,0.08) 0%, transparent 70%),
+        linear-gradient(175deg, #faf6ef 0%, #f5eed9 50%, #ede4cc 100%);
+      overflow: hidden;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: -120px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 600px;
+      height: 600px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(192,57,43,0.04) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    /* 装饰线 */
+    .hero::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, transparent 0%, var(--vermilion) 20%, var(--gold) 50%, var(--vermilion) 80%, transparent 100%);
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 18px;
+      border: 1px solid var(--border);
+      border-radius: 100px;
+      font-size: 12px;
+      letter-spacing: 2px;
+      color: var(--muted);
+      text-transform: uppercase;
+      margin-bottom: 32px;
+      animation: fadeDown 0.8s ease both;
+    }
+
+    .hero-badge span {
+      width: 6px; height: 6px;
+      background: var(--vermilion);
+      border-radius: 50%;
+      animation: pulse 2s ease infinite;
+    }
+
+    .hero h1 {
+      font-family: 'Noto Serif SC', serif;
+      font-weight: 900;
+      font-size: clamp(36px, 6vw, 72px);
+      line-height: 1.2;
+      color: var(--ink);
+      margin-bottom: 16px;
+      animation: fadeUp 0.8s ease 0.1s both;
+    }
+
+    .hero h1 em {
+      font-style: normal;
+      background: linear-gradient(135deg, var(--vermilion) 0%, var(--vermilion-dark) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero-sub {
+      font-size: clamp(15px, 2vw, 18px);
+      color: var(--muted);
+      max-width: 520px;
+      line-height: 1.8;
+      margin-bottom: 40px;
+      font-weight: 300;
+      animation: fadeUp 0.8s ease 0.2s both;
+    }
+
+    .hero-actions {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+      justify-content: center;
+      animation: fadeUp 0.8s ease 0.3s both;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 14px 32px;
+      border-radius: 8px;
+      font-family: inherit;
+      font-size: 15px;
+      font-weight: 500;
+      cursor: pointer;
+      border: none;
+      transition: all 0.25s ease;
+      text-decoration: none;
+    }
+
+    .btn-primary {
+      background: var(--vermilion);
+      color: #fff;
+      box-shadow: 0 4px 16px rgba(192,57,43,0.25);
+    }
+
+    .btn-primary:hover {
+      background: var(--vermilion-dark);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 24px rgba(192,57,43,0.35);
+    }
+
+    .btn-ghost {
+      background: transparent;
+      color: var(--ink);
+      border: 1.5px solid var(--border);
+    }
+
+    .btn-ghost:hover {
+      border-color: var(--vermilion);
+      color: var(--vermilion);
+      transform: translateY(-2px);
+    }
+
+    /* ===== Features ===== */
+    .features {
+      padding: 80px 24px;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .section-label {
+      font-size: 11px;
+      letter-spacing: 3px;
+      color: var(--vermilion);
+      text-transform: uppercase;
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+
+    .section-title {
+      font-family: 'Noto Serif SC', serif;
+      font-size: clamp(24px, 3.5vw, 36px);
+      font-weight: 700;
+      margin-bottom: 48px;
+      line-height: 1.4;
+    }
+
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 24px;
+    }
+
+    .feature-card {
+      padding: 32px;
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .feature-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--vermilion), var(--gold));
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .feature-card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .feature-card:hover::before { opacity: 1; }
+
+    .feature-icon {
+      width: 48px; height: 48px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      margin-bottom: 20px;
+      background: linear-gradient(135deg, rgba(192,57,43,0.08), rgba(212,168,75,0.08));
+    }
+
+    .feature-card h3 {
+      font-family: 'Noto Serif SC', serif;
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+
+    .feature-card p {
+      font-size: 14px;
+      color: var(--muted);
+      line-height: 1.8;
+    }
+
+    /* ===== Demo Section ===== */
+    .demo-section {
+      padding: 80px 24px;
+      background: var(--ink);
+      color: #fff;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .demo-section::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    }
+
+    .demo-inner {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .demo-section .section-label { color: var(--gold); }
+    .demo-section .section-title { color: #fff; }
+
+    .demo-box {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 16px;
+      padding: 40px;
+      margin-top: 40px;
+    }
+
+    .demo-tabs {
+      display: flex;
+      gap: 4px;
+      margin-bottom: 32px;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      padding-bottom: 0;
+    }
+
+    .demo-tab {
+      padding: 12px 20px;
+      background: none;
+      border: none;
+      color: rgba(255,255,255,0.4);
+      font-family: inherit;
+      font-size: 14px;
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      transition: all 0.2s ease;
+      margin-bottom: -1px;
+    }
+
+    .demo-tab.active {
+      color: var(--gold);
+      border-bottom-color: var(--gold);
+    }
+
+    .demo-tab:hover:not(.active) { color: rgba(255,255,255,0.7); }
+
+    .demo-panel { display: none; animation: fadeIn 0.4s ease; }
+    .demo-panel.active { display: block; }
+
+    .demo-textarea {
+      width: 100%;
+      min-height: 200px;
+      padding: 20px;
+      background: rgba(0,0,0,0.3);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 10px;
+      color: #e0dcd0;
+      font-family: 'Noto Sans SC', sans-serif;
+      font-size: 14px;
+      line-height: 2;
+      resize: vertical;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .demo-textarea:focus { border-color: var(--gold); }
+
+    .demo-textarea::placeholder { color: rgba(255,255,255,0.2); }
+
+    .demo-output {
+      margin-top: 24px;
+      padding: 24px;
+      background: rgba(212,168,75,0.06);
+      border: 1px solid rgba(212,168,75,0.15);
+      border-radius: 10px;
+      min-height: 120px;
+      font-size: 14px;
+      line-height: 2;
+      color: rgba(255,255,255,0.75);
+    }
+
+    .demo-output .tag {
+      display: inline-block;
+      padding: 1px 8px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 600;
+      margin-right: 4px;
+    }
+
+    .tag-bg { background: rgba(41,128,185,0.2); color: #5dade2; }
+    .tag-practice { background: rgba(39,174,96,0.2); color: #58d68d; }
+    .tag-result { background: rgba(212,168,75,0.2); color: var(--gold-light); }
+    .tag-problem { background: rgba(192,57,43,0.2); color: #e74c3c; }
+    .tag-plan { background: rgba(142,68,173,0.2); color: #bb8fce; }
+    .tag-other { background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.4); }
+
+    .demo-btn {
+      margin-top: 20px;
+      padding: 10px 24px;
+      background: var(--gold);
+      color: var(--ink);
+      border: none;
+      border-radius: 6px;
+      font-family: inherit;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .demo-btn:hover {
+      background: var(--gold-light);
+      transform: translateY(-1px);
+    }
+
+    /* ===== Footer ===== */
+    .footer {
+      padding: 40px 24px;
+      text-align: center;
+      font-size: 13px;
+      color: var(--muted);
+      border-top: 1px solid var(--border);
+    }
+
+    .footer a {
+      color: var(--vermilion);
+      text-decoration: none;
+    }
+
+    .footer a:hover { text-decoration: underline; }
+
+    /* ===== Animations ===== */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes fadeDown {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
+    }
+
+    /* ===== Scroll Reveal ===== */
+    .reveal {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: all 0.6s ease;
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    @media (max-width: 640px) {
+      .hero { padding: 40px 20px; }
+      .feature-grid { grid-template-columns: 1fr; }
+      .demo-box { padding: 24px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="hero-badge"><span></span> TRAE AI 大赛参赛作品</div>
+    <h1>公文<em>整合</em>助手</h1>
+    <p class="hero-sub">团队多人素材一键合并，智能识别背景、做法、成效、问题，自动归类到目标文种结构，告别逐段手抄的低效流程。</p>
+    <div class="hero-actions">
+      <a href="./index.html" class="btn btn-primary">&#9654; 进入完整应用</a>
+      <a href="#demo" class="btn btn-ghost">&#9998; 在线试运行</a>
+    </div>
+  </section>
+
+  <!-- Features -->
+  <section class="features">
+    <div class="reveal">
+      <div class="section-label">Core Features</div>
+      <h2 class="section-title">四大核心能力</h2>
+    </div>
+    <div class="feature-grid">
+      <div class="feature-card reveal">
+        <div class="feature-icon">&#128230;</div>
+        <h3>多素材批量上传</h3>
+        <p>支持 .txt .md .docx 格式拖拽上传，自动提取文本、识别作者，会话级持久化不丢失。</p>
+      </div>
+      <div class="feature-card reveal">
+        <div class="feature-icon">&#128269;</div>
+        <h3>智能内容分类</h3>
+        <p>复合短语模式 + 语义特征识别，自动将段落归入背景、做法、成效、问题、计划等章节。</p>
+      </div>
+      <div class="feature-card reveal">
+        <div class="feature-icon">&#9888;</div>
+        <h3>格式检测一键修复</h3>
+        <p>标点空格、口语化表达、待核实标记等自动检测，支持一键修复并实时刷新。</p>
+      </div>
+      <div class="feature-card reveal">
+        <div class="feature-icon">&#128208;</div>
+        <h3>章节合并预览</h3>
+        <p>覆盖矩阵可视化、跨素材重复检测、数据一致性校验，合并结果可直接导出。</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Demo -->
+  <section class="demo-section" id="demo">
+    <div class="demo-inner">
+      <div class="reveal">
+        <div class="section-label">Live Demo</div>
+        <h2 class="section-title">在线试运行</h2>
+      </div>
+      <div class="demo-box reveal">
+        <div class="demo-tabs">
+          <button class="demo-tab active" onclick="switchTab('classify')">智能分类</button>
+          <button class="demo-tab" onclick="switchTab('format')">格式修复</button>
+        </div>
+
+        <!-- 智能分类 Demo -->
+        <div class="demo-panel active" id="panel-classify">
+          <textarea class="demo-textarea" id="classify-input" placeholder="粘贴一段公文内容，点击"识别分类"查看智能归类结果...&#10;&#10;示例：&#10;根据《关于深化国有企业改革的指导意见》精神，为贯彻落实上级部署要求，我公司自2024年启动了三项制度改革工作。&#10;&#10;一是建立了市场化选人用人机制，完善了考核评价体系。&#10;&#10;全年实现营收增长12.5%，利润突破3亿元。&#10;&#10;但是也存在部分干部思想不够解放、改革推进不平衡的问题。&#10;&#10;下一步将继续深化各项改革举措，力争在年底前全面完成改革任务。">根据《关于深化国有企业改革的指导意见》精神，为贯彻落实上级部署要求，我公司自2024年启动了三项制度改革工作。
+
+一是建立了市场化选人用人机制，完善了考核评价体系，出台了《员工竞聘上岗管理办法》。
+
+全年实现营收增长12.5%，利润突破3亿元，员工满意度达到92%。
+
+但是也存在部分干部思想不够解放、改革推进不平衡、部分地区落实不到位的问题。
+
+下一步将继续深化各项改革举措，着力提升管理水平，力争在年底前全面完成改革任务。</textarea>
+          <br>
+          <button class="demo-btn" onclick="runClassify()">&#128269; 识别分类</button>
+          <div class="demo-output" id="classify-output" style="display:none;"></div>
+        </div>
+
+        <!-- 格式修复 Demo -->
+        <div class="demo-panel" id="panel-format">
+          <textarea class="demo-textarea" id="format-input" placeholder="粘贴含格式问题的文本，点击"一键修复"...&#10;&#10;示例：&#10;工作做得不错 ，但是还存在一些问题。咱们要继续努力，把事情搞好 。">近年来，我公司积极落实改革部署 ，取得了显著成效 。但是也存在一些问题 ，比如改革推进 不够深入，部分制度 还没有落实到位。咱们要继续努力，把事情搞好 ，确保完成年度目标 。</textarea>
+          <br>
+          <button class="demo-btn" onclick="runFormat()">&#10003; 一键修复</button>
+          <div class="demo-output" id="format-output" style="display:none;"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <p>公文整合助手 &mdash; 由 TRAE AI 构建 &middot; <a href="https://github.com/qcflora/-" target="_blank">GitHub</a></p>
+  </footer>
+
+  <script>
+    // ===== Tab 切换 =====
+    function switchTab(tabId) {
+      document.querySelectorAll('.demo-tab').forEach((t, i) => {
+        t.classList.toggle('active', t.textContent.includes(tabId === 'classify' ? '智能分类' : '格式修复'));
+      });
+      document.querySelectorAll('.demo-panel').forEach(p => p.classList.remove('active'));
+      document.getElementById('panel-' + tabId).classList.add('active');
+    }
+
+    // ===== 智能分类 Demo =====
+    function runClassify() {
+      const text = document.getElementById('classify-input').value.trim();
+      if (!text) return;
+
+      const paras = text.split(/\n{2,}/).map(p => p.trim()).filter(p => p.length > 0);
+      const sectionLabels = {
+        background: { name: '背景', cls: 'tag-bg' },
+        practices: { name: '主要做法', cls: 'tag-practice' },
+        achievements: { name: '工作成效', cls: 'tag-result' },
+        problems: { name: '存在问题', cls: 'tag-problem' },
+        plans: { name: '下一步打算', cls: 'tag-plan' }
+      };
+
+      const bgPatterns = [/根据[《\u300a]/, /为贯彻落实/, /按照.*要求/, /为.*工作/, /依据.*规定/, /在.*领导下/, /^(近年来|202\d年|今年)/];
+      const practicePatterns = [/一是|二是|三是/, /建立了|完善了|推进了|出台了|制定了|印发了/, /机制|体系|制度|办法/];
+      const achievementPatterns = [/增长|提高|降低|减少|完成|突破|累计|同比增长/, /\d+\.?\d*%/, /[万亿千万]元/];
+      const problemPatterns = [/但是|然而|不过|尽管/, /问题|不足|困难|挑战|短板|不到位|不够|不深|不实/];
+      const planPatterns = [/下一步|今后|拟|接下来|未来/, /继续|持续|深化|加强|力争|确保/];
+
+      const results = paras.map(para => {
+        let scores = {};
+        scores.background = bgPatterns.reduce((s, p) => s + (p.test(para) ? 1 : 0), 0) + (para.length < 100 ? 0.5 : 0);
+        scores.practices = practicePatterns.reduce((s, p) => s + (p.test(para) ? 1 : 0), 0);
+        scores.achievements = achievementPatterns.reduce((s, p) => s + (p.test(para) ? 1 : 0), 0);
+        scores.problems = problemPatterns.reduce((s, p) => s + (p.test(para) ? 1 : 0), 0);
+        scores.plans = planPatterns.reduce((s, p) => s + (p.test(para) ? 1 : 0), 0);
+
+        const best = Object.entries(scores).sort((a, b) => b[1] - a[1])[0];
+        const label = sectionLabels[best[0]] || { name: '其他', cls: 'tag-other' };
+        return { text: para, section: label, score: best[1] };
+      });
+
+      const output = document.getElementById('classify-output');
+      output.style.display = 'block';
+      output.innerHTML = results.map(r =>
+        `<div style="margin-bottom:16px;"><span class="tag ${r.section.cls}">${r.section.name}</span> <span style="font-size:12px;opacity:0.5;">置信度 ${Math.min(r.score * 25, 100)}%</span><br><span style="margin-top:4px;display:inline-block;">${r.text}</span></div>`
+      ).join('');
+    }
+
+    // ===== 格式修复 Demo =====
+    function runFormat() {
+      let text = document.getElementById('format-input').value.trim();
+      if (!text) return;
+
+      const fixes = [];
+
+      // 标点后置空格
+      const afterPunct = text.match(/([，。、；：！？""''（）])\s+/g);
+      if (afterPunct) afterPunct.forEach(f => fixes.push(`移除标点后空格 "${f}"`));
+      text = text.replace(/([，。、；：！？""''（）])\s+/g, '$1');
+
+      // 标点前置空格
+      const beforePunct = text.match(/\s+([，。、；：！？""''（）])/g);
+      if (beforePunct) beforePunct.forEach(f => fixes.push(`移除标点前空格 "${f}"`));
+      text = text.replace(/\s+([，。、；：！？""''（）])/g, '$1');
+
+      // 口语化表达
+      const oralMap = { '咱们': '我公司', '做得不错': '取得一定成效', '搞': '推进', '弄': '处理' };
+      for (const [oral, formal] of Object.entries(oralMap)) {
+        if (text.includes(oral)) {
+          text = text.replace(new RegExp(oral, 'g'), formal);
+          fixes.push(`"${oral}" → "${formal}"`);
+        }
+      }
+
+      const output = document.getElementById('format-output');
+      output.style.display = 'block';
+
+      if (fixes.length > 0) {
+        output.innerHTML = `<div style="margin-bottom:12px;color:var(--gold-light);">&#10003; 已修复 ${fixes.length} 项：</div>` +
+          fixes.map(f => `<div style="margin-bottom:4px;font-size:13px;">&#8226; ${f}</div>`).join('') +
+          `<div style="margin-top:16px;padding-top:16px;border-top:1px solid rgba(255,255,255,0.08);"><strong style="color:var(--gold);">修复后：</strong><br>${text}</div>`;
+      } else {
+        output.innerHTML = '<div style="color:var(--gold);">未检测到格式问题。</div>';
+      }
+    }
+
+    // ===== Scroll Reveal =====
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+    // 自动运行 demo
+    window.addEventListener('load', () => {
+      setTimeout(runClassify, 600);
+    });
+  </script>
+</body>
+</html>
