@@ -2960,6 +2960,31 @@ mark {
   font-size: 14px;
 }
 
+/* ===== 文种卡片分类标签 ===== */
+.dt-category {
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-top: 4px;
+}
+
+/* 活动类标签 */
+.dt-category-label {
+  display: block;
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--primary);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin: 16px 0 8px;
+  padding-left: 2px;
+}
+
+.doctype-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 10px;
+}
+
 /* aligned-text 限高滚动 */
 .aligned-text {
   max-height: 400px;

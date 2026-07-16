@@ -15,7 +15,16 @@ const materialUploader = {
     { id: 'briefing', name: '简报', icon: '&#128240;', category: '常见正式材料', desc: '简要报送动态、会议情况、阶段成果' },
     { id: 'speech', name: '讲话稿', icon: '&#127908;', category: '常见正式材料', desc: '领导讲话、会议发言、动员部署' },
     { id: 'summary', name: '工作总结', icon: '&#128209;', category: '常见正式材料', desc: '阶段性复盘、年度总结、专项工作总结' },
-    { id: 'work-plan', name: '工作方案', icon: '&#128296;', category: '常见正式材料', desc: '专项行动、阶段性工作、项目推进' }
+    { id: 'work-plan', name: '工作方案', icon: '&#128296;', category: '常见正式材料', desc: '专项行动、阶段性工作、项目推进' },
+    { id: 'event-plan', name: '活动方案', icon: '&#127881;', category: '活动/仪式', desc: '庆典、晚会、年会、团建等活动策划方案' },
+    { id: 'ceremony-script', name: '仪式主持词', icon: '&#127891;', category: '活动/仪式', desc: '抓周、满月、百天、周岁、寿宴等仪式流程' },
+    { id: 'meeting-agenda', name: '会议议程', icon: '&#128197;', category: '活动/仪式', desc: '会议基本信息、参会人员、议题安排' },
+    { id: 'speech-celebration', name: '庆典致辞', icon: '&#127882;', category: '活动/仪式', desc: '庆典、纪念日的欢迎词、致辞、讲话' },
+    { id: 'investigation-report', name: '调研报告', icon: '&#128269;', category: '研究类', desc: '实地调研、走访座谈后的分析报告' },
+    { id: 'proposal', name: '建议书/提案', icon: '&#128221;', category: '研究类', desc: '提出问题分析和对策建议' },
+    { id: 'work-log', name: '工作日志/周报', icon: '&#128221;', category: '日常办公', desc: '每周/每日工作进展、计划汇报' },
+    { id: 'evaluation', name: '述职/考核报告', icon: '&#128202;', category: '日常办公', desc: '年终述职、绩效考核自评报告' },
+    { id: 'learning-report', name: '学习心得/体会', icon: '&#128214;', category: '日常办公', desc: '培训学习、文件学习后的心得体会' }
   ],
 
   // 从持久化恢复会话

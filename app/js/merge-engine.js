@@ -316,6 +316,117 @@ const mergeEngine = {
         strong: ['进度', '时间', '节点', '阶段', '时期', '月份', '季度', '年度', '周期', '时限', '工期', '日程', '时间表', '路线图'],
         medium: ['前', '底', '初', '中', '末', '间', '之前', '之后', '以内', '以内完成', '按期', '按时', '如期'],
         weak: []
+      },
+      // ===== 新增章节关键词 =====
+      'event-overview': {
+        strong: ['活动主题', '活动名称', '活动时间', '活动地点', '活动目的', '活动意义', '活动背景', '活动概况', '活动简介'],
+        medium: ['活动', '举办', '承办', '协办', '主题', '宗旨', '理念', '目的', '意义'],
+        weak: ['庆典', '典礼', '仪式', '晚会', '年会', '团建', '派对', '生日', '满月', '百天', '周岁', '抓周']
+      },
+      'event-participants': {
+        strong: ['在场', '参与人员', '参会人员', '出席人员', '到场人员', '嘉宾', '主持人', '受邀'],
+        medium: ['参加', '出席', '列席', '到场', '宝宝', '爸爸', '妈妈', '外婆', '爷爷', '奶奶', '阿姨', '亲属'],
+        weak: ['领导', '同事', '朋友', '家属', '嘉宾']
+      },
+      'event-preparation': {
+        strong: ['筹备', '准备', '准备事项', '前期准备', '背景', '布置', '装饰', '场景', '舞台', '现场布置'],
+        medium: ['道具', '物资', '设备', '音响', '灯光', '摄影', '摄像', '签到', '引导', '餐饮'],
+        weak: ['KT板', '横幅', '气球', '鲜花', '红毯', '背景板']
+      },
+      'event-steps': {
+        strong: ['流程', '环节', '步骤', '仪式', '环节一', '环节二', '第一项', '第二项', '首先', '然后', '接着', '最后', '核心环节', '主理', '辅助'],
+        medium: ['一、', '二、', '三、', '四、', '五、', '六、', '七、', '八、', '九、', '十、', '十一、', '十二、', '规则', '寓意', '备', '道具'],
+        weak: []
+      },
+      'event-precautions': {
+        strong: ['注意', '注意事项', '提醒', '温馨提示', '安全', '应急', '备用', '预案'],
+        medium: ['若', '如果', '不', '请', '务必', '确保', '避免', '防止', '引导'],
+        weak: []
+      },
+      'event-budget': {
+        strong: ['预算', '费用', '经费', '开支', '花费', '成本', '物资清单', '道具清单'],
+        medium: ['元', '万元', '费用合计', '总计', '共计', '采购', '租赁', '自制'],
+        weak: []
+      },
+      'ceremony-opening': {
+        strong: ['吉时', '良辰', '吉日', '时辰', '开场', '欢迎', '各位', '亲朋好友', '齐聚'],
+        medium: ['今天', '此时', '此刻', '嘉宾', '满月', '周岁', '百天', '抓周', '庆生'],
+        weak: []
+      },
+      'ceremony-steps': {
+        strong: ['净手', '滚灾', '戴虎头帽', '更衣', '梳头', '过聪门', '拨浪鼓', '抓周', '敲红鼓', '印足', '封酒', '食福', '主理', '辅助', '仪式'],
+        medium: ['一洗', '二洗', '三洗', '一梳', '二梳', '三梳', '四梳', '五梳', '六梳', '七梳', '聪明伶俐', '平平安安', '腰缠万贯', '虎头虎脑', '威风凛凛'],
+        weak: []
+      },
+      'ceremony-props': {
+        strong: ['【备】', '家中已有', '备用', '道具', '物资', '准备'],
+        medium: ['水盆', '葱', '苹果', '大米', '白水煮蛋', '虎头帽', '木梳', '聪明门', '青葱', '拨浪鼓', '红鼓', '朱砂印泥', '卷轴', '酒坛', '封条'],
+        weak: []
+      },
+      'ceremony-roles': {
+        strong: ['主理', '辅助', '负责', '主持', '引导', '爸爸', '妈妈', '外婆', '爷爷', '奶奶'],
+        medium: ['宝宝', '家人', '不喊不指不引导'],
+        weak: []
+      },
+      'ceremony-closing': {
+        strong: ['祝福', '收尾', '圆满', '结束', '礼成', '顺利'],
+        medium: ['愿', '祝', '希望', '期盼', '健康成长', '岁岁平安', '长命百岁'],
+        weak: []
+      },
+      'meeting-basic': {
+        strong: ['会议时间', '会议地点', '主持人', '会议主题', '会议议题', '会议形式', '会议议程'],
+        medium: ['时间', '地点', '会议室', '上午', '下午', '线上', '线下', '视频'],
+        weak: []
+      },
+      'meeting-participants': {
+        strong: ['参会人员', '出席人员', '列席人员', '参会名单', '应到', '实到', '请假'],
+        medium: ['参加', '出席', '列席', '主持', '记录', '发言'],
+        weak: []
+      },
+      'meeting-items': {
+        strong: ['议程', '议题', '讨论', '审议', '汇报', '发言', '交流', '表决', '决议', '第一项', '第二项', '第三项'],
+        medium: ['一、', '二、', '三、', '首先', '其次', '再次', '最后', '请', '汇报'],
+        weak: []
+      },
+      'meeting-materials': {
+        strong: ['会议材料', '附件', '参阅材料', '汇报材料', '提交材料'],
+        medium: ['材料', '文件', '方案', '报告', '草案', '征求意见稿'],
+        weak: []
+      },
+      'meeting-notes': {
+        strong: ['要求', '落实', '贯彻', '执行', '督办', '跟踪', '反馈', '时限'],
+        medium: ['请', '按照', '根据', '遵照', '抓紧', '尽快', '及时'],
+        weak: []
+      },
+      'method': {
+        strong: ['调研方式', '调研方法', '调研范围', '调研对象', '调研时间', '调研组', '走访', '座谈', '问卷', '抽样', '实地', '电话', '网络'],
+        medium: ['调研', '考察', '了解', '收集', '分析', '统计', '样本', '覆盖'],
+        weak: []
+      },
+      'findings': {
+        strong: ['发现', '调查显示', '调研发现', '总体来看', '据了解', '普遍反映', '数据显示', '结果表明'],
+        medium: ['情况', '现状', '趋势', '变化', '特点', '特征', '现象', '表现'],
+        weak: []
+      },
+      'suggestions': {
+        strong: ['建议', '对策', '措施', '对策建议', '意见建议', '提出', '应当', '需要', '必须'],
+        medium: ['一是', '二是', '三是', '一方面', '另一方面', '同时', '此外', '完善', '加强', '推进', '建立健全'],
+        weak: []
+      },
+      'analysis': {
+        strong: ['分析', '原因', '原因分析', '问题分析', '根源', '因素', '主要表现在', '具体来说', '归纳起来'],
+        medium: ['由于', '因为', '导致', '造成', '影响', '制约', '瓶颈', '深层次'],
+        weak: []
+      },
+      'greeting': {
+        strong: ['尊敬的', '各位领导', '各位来宾', '各位同事', '各位朋友', '同志们', '朋友们', '大家好', '女士们先生们'],
+        medium: ['欢迎', '感谢', '荣幸', '高兴', '首先', '请允许我'],
+        weak: []
+      },
+      'insights': {
+        strong: ['心得', '体会', '感悟', '启发', '认识', '深刻认识', '深刻领会', '认识到', '感触'],
+        medium: ['通过学习', '使我', '让我', '深刻理解', '更加坚定', '更加清醒', '更加自觉'],
+        weak: []
       }
     };
 
@@ -430,6 +541,66 @@ const mergeEngine = {
         /着力.*?提升|着力.*?推进|着力.*?加强/,
         /持续.*?深化|持续.*?推进|持续.*?加强/,
         /力争.*?实现|确保.*?完成|确保.*?实现/
+      ],
+      // ===== 新增复合模式 =====
+      'event-steps': [
+        /^[一二三四五六七八九十]+[、.．]/,
+        /主理|辅助|爸爸|妈妈|外婆|爷爷|奶奶/,
+        /【规则】|【道具】|【寓意】|【备】/,
+        /核心环节|第一项|第二项|第三项/,
+        /一洗|二洗|三洗|一梳|二梳|三梳/,
+        /净手|滚灾|更衣|梳头|过聪门|敲红鼓|印足|封酒|食福/
+      ],
+      'ceremony-steps': [
+        /净手|滚灾|戴虎头帽|更衣|梳头|过聪门|拨浪鼓|敲红鼓|印足|封酒|食福/,
+        /聪明伶俐|平平安安|腰缠万贯|虎头虎脑|威风凛凛|百邪不侵|虎虎生威/,
+        /一梳|二梳|三梳|四梳|五梳|六梳|七梳|八梳/,
+        /一洗|二洗|三洗/,
+        /主理|辅助/
+      ],
+      'ceremony-props': [
+        /【备】/,
+        /家中已有/,
+        /水盆|葱|苹果|大米|白水煮蛋|虎头帽|木梳|聪明门|青葱|拨浪鼓|红鼓|朱砂印泥|卷轴|酒坛|封条/
+      ],
+      'event-overview': [
+        /活动[主题时间地点目的背景概况]/,
+        /举办|承办|协办/,
+        /丙午年|庚戌日|时辰|吉时/
+      ],
+      'event-participants': [
+        /【在场】|【参与人员】|【参会人员】/,
+        /宝宝|爸爸|妈妈|外婆|爷爷|奶奶|阿姨/
+      ],
+      'event-preparation': [
+        /【背景】|【服装】|【布置】/,
+        /KT板|灯笼|祥云|藤编|竹筒|玄关布|青花瓶|霓裳/,
+        /藏蓝|卷轴|红灯笼/
+      ],
+      'meeting-items': [
+        /第一项|第二项|第三项|第四项|第五项/,
+        /议题[一二三四五六七八九十]/,
+        /审议|讨论|汇报|发言|交流|表决/
+      ],
+      'meeting-basic': [
+        /会议时间|会议地点|主持人/,
+        /应到|实到|请假|列席/
+      ],
+      'findings': [
+        /调研发现|调查显示|据了解|普遍反映/,
+        /总体来看|从.*来看|数据显示|结果表明/,
+        /主要表现在|具体来说|归纳起来/
+      ],
+      'suggestions': [
+        /一是.*?二是.*?三是/,
+        /建议.*?一是|对策.*?一是/,
+        /一方面.*?另一方面/
+      ],
+      'insights': [
+        /心得|体会|感悟|启发|感触/,
+        /通过学习|使我|让我/,
+        /深刻认识|深刻领会|深刻理解/,
+        /更加坚定|更加清醒|更加自觉/
       ]
     };
     return patterns[sectionId] || [];
@@ -999,6 +1170,114 @@ const mergeEngine = {
             { id: 'tasks', title: '主要任务', required: true },
             { id: 'measures', title: '保障措施', required: true },
             { id: 'schedule', title: '进度安排', required: false }
+          ]
+        }
+      },
+      // ===== 新增文种 =====
+      'event-plan': {
+        name: '活动方案',
+        structure: {
+          sections: [
+            { id: 'event-overview', title: '活动概况', required: true },
+            { id: 'event-participants', title: '参与人员', required: false },
+            { id: 'event-preparation', title: '筹备事项', required: true },
+            { id: 'event-steps', title: '活动流程', required: true },
+            { id: 'event-precautions', title: '注意事项', required: false },
+            { id: 'event-budget', title: '预算/物资', required: false }
+          ]
+        }
+      },
+      'ceremony-script': {
+        name: '仪式主持词',
+        structure: {
+          sections: [
+            { id: 'ceremony-opening', title: '开场引入', required: true },
+            { id: 'ceremony-steps', title: '仪式流程', required: true },
+            { id: 'ceremony-props', title: '道具/物资', required: false },
+            { id: 'ceremony-roles', title: '人员分工', required: false },
+            { id: 'ceremony-closing', title: '收尾/祝福', required: false }
+          ]
+        }
+      },
+      'meeting-agenda': {
+        name: '会议议程',
+        structure: {
+          sections: [
+            { id: 'meeting-basic', title: '会议基本信息', required: true },
+            { id: 'meeting-participants', title: '参会人员', required: true },
+            { id: 'meeting-items', title: '议程安排', required: true },
+            { id: 'meeting-materials', title: '会议材料', required: false },
+            { id: 'meeting-notes', title: '会议要求', required: false }
+          ]
+        }
+      },
+      'speech-celebration': {
+        name: '庆典致辞',
+        structure: {
+          sections: [
+            { id: 'greeting', title: '称呼与问候', required: true },
+            { id: 'overview', title: '活动背景/回顾', required: true },
+            { id: 'achievements', title: '成绩/亮点', required: true },
+            { id: 'practices', title: '经验分享', required: false },
+            { id: 'plans', title: '展望/祝愿', required: true }
+          ]
+        }
+      },
+      'investigation-report': {
+        name: '调研报告',
+        structure: {
+          sections: [
+            { id: 'background', title: '调研背景与目的', required: true },
+            { id: 'method', title: '调研方式/范围', required: true },
+            { id: 'findings', title: '调研发现', required: true },
+            { id: 'problems', title: '存在的主要问题', required: true },
+            { id: 'suggestions', title: '对策建议', required: true }
+          ]
+        }
+      },
+      'proposal': {
+        name: '建议书/提案',
+        structure: {
+          sections: [
+            { id: 'background', title: '案由/背景', required: true },
+            { id: 'analysis', title: '问题分析', required: true },
+            { id: 'suggestions', title: '具体建议', required: true },
+            { id: 'plans', title: '预期效果', required: false }
+          ]
+        }
+      },
+      'work-log': {
+        name: '工作日志/周报',
+        structure: {
+          sections: [
+            { id: 'overview', title: '本周概况', required: true },
+            { id: 'practices', title: '已开展工作', required: true },
+            { id: 'achievements', title: '完成情况', required: true },
+            { id: 'problems', title: '存在问题', required: false },
+            { id: 'plans', title: '下周计划', required: true }
+          ]
+        }
+      },
+      'evaluation': {
+        name: '考核评价/述职报告',
+        structure: {
+          sections: [
+            { id: 'overview', title: '岗位职责/考核范围', required: true },
+            { id: 'practices', title: '履职情况/主要工作', required: true },
+            { id: 'achievements', title: '取得成绩', required: true },
+            { id: 'problems', title: '存在的不足', required: true },
+            { id: 'plans', title: '改进方向', required: true }
+          ]
+        }
+      },
+      'learning-report': {
+        name: '学习心得/体会',
+        structure: {
+          sections: [
+            { id: 'background', title: '学习背景', required: true },
+            { id: 'content', title: '主要学习内容', required: true },
+            { id: 'insights', title: '心得体会', required: true },
+            { id: 'plans', title: '结合实际/下一步', required: false }
           ]
         }
       }
