@@ -50,6 +50,9 @@ const app = {
       case 'settings':
         container.innerHTML = this.renderSettings();
         break;
+      case 'ai-demo':
+        container.innerHTML = this.renderAiDemo();
+        break;
       default:
         container.innerHTML = '<div class="page-error">页面不存在</div>';
     }
@@ -182,8 +185,156 @@ const app = {
     alert('配置已保存');
   },
 
+  // ===== AI 试用页面 =====
+  renderAiDemo() {
+    return `
+      <div class="page-container">
+        <div class="page-header">
+          <h2>&#129302; AI 试用</h2>
+          <p class="page-subtitle">无需上传素材，直接体验核心 AI 能力</p>
+        </div>
+
+        <div class="card ai-demo-card">
+          <div class="demo-tabs">
+            <button class="demo-tab active" data-tab="classify" onclick="app.switchDemoTab('classify')">
+              <span>&#128269;</span> 智能分类
+            </button>
+            <button class="demo-tab" data-tab="format" onclick="app.switchDemoTab('format')">
+              <span>&#10003;</span> 格式修复
+            </button>
+          </div>
+
+          <!-- 智能分类面板 -->
+          <div class="demo-panel active" id="demo-panel-classify">
+            <div class="demo-intro">
+              <p>粘贴一段公文内容，AI 自动识别背景、做法、成效、问题、计划等章节归属。</p>
+            </div>
+            <textarea class="demo-textarea" id="demo-classify-input"
+              placeholder="示例：\n\n根据《关于深化国有企业改革的指导意见》精神，为贯彻落实上级部署要求，我公司自2024年启动了三项制度改革工作。\n\n一是建立了市场化选人用人机制，完善了考核评价体系。\n\n全年实现营收增长12.5%，利润突破3亿元。\n\n但是也存在部分干部思想不够解放、改革推进不平衡的问题。\n\n下一步将继续深化各项改革举措，力争在年底前全面完成改革任务。">根据《关于深化国有企业改革的指导意见》精神，为贯彻落实上级部署要求，我公司自2024年启动了三项制度改革工作。
+
+一是建立了市场化选人用人机制，完善了考核评价体系，出台了《员工竞聘上岗管理办法》。
+
+全年实现营收增长12.5%，利润突破3亿元，员工满意度达到92%。
+
+但是也存在部分干部思想不够解放、改革推进不平衡、部分地区落实不到位的问题。
+
+下一步将继续深化各项改革举措，着力提升管理水平，力争在年底前全面完成改革任务。</textarea>
+            <button class="btn btn-primary" onclick="app.runDemoClassify()">
+              <span>&#128269;</span> 识别分类
+            </button>
+            <div class="demo-output" id="demo-classify-output" style="display:none;"></div>
+          </div>
+
+          <!-- 格式修复面板 -->
+          <div class="demo-panel" id="demo-panel-format">
+            <div class="demo-intro">
+              <p>粘贴含格式问题的文本，一键修复标点空格、口语化表达等常见问题。</p>
+            </div>
+            <textarea class="demo-textarea" id="demo-format-input"
+              placeholder="示例：\n\n工作做得不错 ，但是还存在一些问题。咱们要继续努力，把事情搞好 。">近年来，我公司积极落实改革部署 ，取得了显著成效 。但是也存在一些问题 ，比如改革推进 不够深入，部分制度 还没有落实到位。咱们要继续努力，把事情搞好 ，确保完成年度目标 。</textarea>
+            <button class="btn btn-primary" onclick="app.runDemoFormat()">
+              <span>&#10003;</span> 一键修复
+            </button>
+            <div class="demo-output" id="demo-format-output" style="display:none;"></div>
+          </div>
+        </div>
+      </div>
+    `;
+  },
+
+  switchDemoTab(tabId) {
+    document.querySelectorAll('.demo-tab').forEach(t => t.classList.toggle('active', t.dataset.tab === tabId));
+    document.querySelectorAll('.demo-panel').forEach(p => p.classList.toggle('active', p.id === 'demo-panel-' + tabId));
+  },
+
+  runDemoClassify() {
+    const text = document.getElementById('demo-classify-input').value.trim();
+    if (!text) return;
+
+    const paras = text.split(/\n{2,}/).map(p => p.trim()).filter(p => p.length > 0);
+
+    const sectionLabels = {
+      background: { name: '背景', cls: 'tag-bg' },
+      practices: { name: '主要做法', cls: 'tag-practice' },
+      achievements: { name: '工作成效', cls: 'tag-result' },
+      problems: { name: '存在问题', cls: 'tag-problem' },
+      plans: { name: '下一步打算', cls: 'tag-plan' }
+    };
+
+    const bgPatterns = [/根据[《\u300a]/, /为贯彻落实/, /按照.*要求/, /为.*工作/, /依据.*规定/, /在.*领导下/, /^(近年来|202\d年|今年)/];
+    const practicePatterns = [/一是|二是|三是/, /建立了|完善了|推进了|出台了|制定了|印发了/, /机制|体系|制度|办法/];
+    const achievementPatterns = [/增长|提高|降低|减少|完成|突破|累计|同比增长/, /\d+\.?\d*%/, /[万亿千万]元/];
+    const problemPatterns = [/但是|然而|不过|尽管/, /问题|不足|困难|挑战|短板|不到位|不够|不深|不实/];
+    const planPatterns = [/下一步|今后|拟|接下来|未来/, /继续|持续|深化|加强|力争|确保/];
+
+    const results = paras.map(para => {
+      const scores = {
+        background: bgPatterns.reduce((s, p) => s + (p.test(para) ? 1 : 0), 0) + (para.length < 100 ? 0.5 : 0),
+        practices: practicePatterns.reduce((s, p) => s + (p.test(para) ? 1 : 0), 0),
+        achievements: achievementPatterns.reduce((s, p) => s + (p.test(para) ? 1 : 0), 0),
+        problems: problemPatterns.reduce((s, p) => s + (p.test(para) ? 1 : 0), 0),
+        plans: planPatterns.reduce((s, p) => s + (p.test(para) ? 1 : 0), 0)
+      };
+      const best = Object.entries(scores).sort((a, b) => b[1] - a[1])[0];
+      const label = sectionLabels[best[0]] || { name: '其他', cls: 'tag-other' };
+      return { text: para, section: label, score: best[1] };
+    });
+
+    const output = document.getElementById('demo-classify-output');
+    output.style.display = 'block';
+    output.innerHTML = results.map(r =>
+      `<div class="demo-result-item">
+        <div class="demo-result-meta">
+          <span class="demo-tag ${r.section.cls}">${r.section.name}</span>
+          <span class="demo-confidence">置信度 ${Math.min(r.score * 25, 100)}%</span>
+        </div>
+        <div class="demo-result-text">${r.text}</div>
+      </div>`
+    ).join('');
+
+    this.updateStatus('智能分类完成');
+  },
+
+  runDemoFormat() {
+    let text = document.getElementById('demo-format-input').value.trim();
+    if (!text) return;
+
+    const fixes = [];
+
+    const afterPunct = text.match(/([，。、；：！？""''（）])\s+/g);
+    if (afterPunct) afterPunct.forEach(f => fixes.push(`移除标点后空格 "${f}"`));
+    text = text.replace(/([，。、；：！？""''（）])\s+/g, '$1');
+
+    const beforePunct = text.match(/\s+([，。、；：！？""''（）])/g);
+    if (beforePunct) beforePunct.forEach(f => fixes.push(`移除标点前空格 "${f}"`));
+    text = text.replace(/\s+([，。、；：！？""''（）])/g, '$1');
+
+    const oralMap = { '咱们': '我公司', '做得不错': '取得一定成效', '搞': '推进', '弄': '处理' };
+    for (const [oral, formal] of Object.entries(oralMap)) {
+      if (text.includes(oral)) {
+        text = text.replace(new RegExp(oral, 'g'), formal);
+        fixes.push(`"${oral}" → "${formal}"`);
+      }
+    }
+
+    const output = document.getElementById('demo-format-output');
+    output.style.display = 'block';
+
+    if (fixes.length > 0) {
+      output.innerHTML = `
+        <div class="demo-fix-summary">&#10003; 已修复 ${fixes.length} 项</div>
+        <div class="demo-fix-list">${fixes.map(f => `<div>&#8226; ${f}</div>`).join('')}</div>
+        <div class="demo-fix-result"><strong>修复后：</strong><br>${text}</div>`;
+    } else {
+      output.innerHTML = '<div class="demo-fix-empty">未检测到格式问题。</div>';
+    }
+
+    this.updateStatus('格式修复完成');
+  },
+
   updateStatus(text) {
-    document.getElementById('status-text').textContent = text;
+    const el = document.getElementById('status-text');
+    if (el) el.textContent = text;
   }
 };
 
