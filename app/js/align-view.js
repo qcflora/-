@@ -103,33 +103,47 @@ const alignView = {
           </div>
         </div>
 
+        <div class="aligned-tabs">
+          <button class="aligned-tab active" data-tab="restructure" onclick="alignView.switchAlignedTab(this, 'restructure-${index}', ${index})">
+            &#128260; 章节分布
+          </button>
+          <button class="aligned-tab" data-tab="annotated" onclick="alignView.switchAlignedTab(this, 'annotated-${index}', ${index})">
+            &#128196; 标注原文
+          </button>
+          <button class="aligned-tab" data-tab="keypoints" onclick="alignView.switchAlignedTab(this, 'keypoints-${index}', ${index})">
+            &#128269; 关键提示 ${warningCount > 0 ? `<span class="aligned-tab-badge">${warningCount}</span>` : ''}
+          </button>
+        </div>
+
         <div class="aligned-body">
-          ${restructureHtml}
-
-          <div class="aligned-preview">
-            <details open>
-              <summary>查看格式对齐后的原文（已标注所属栏目）</summary>
-              <div class="aligned-text-actions">
-                <button class="btn btn-sm btn-secondary" onclick="alignView.downloadAlignedText(${index})">
-                  <span class="btn-icon">&#11015;</span> 下载标注原文
-                </button>
-              </div>
-              <pre class="aligned-text annotated">${this.escapeHtml(annotatedText)}</pre>
-            </details>
+          <div class="aligned-panel active" id="restructure-${index}">
+            ${restructureHtml}
           </div>
-
-          ${keyPointsHtml ? `
-            <div class="keypoints-section">
-              <h4>关键提示</h4>
-              ${keyPointsHtml}
+          <div class="aligned-panel" id="annotated-${index}">
+            <div class="aligned-text-actions">
+              <button class="btn btn-sm btn-secondary" onclick="alignView.downloadAlignedText(${index})">
+                <span class="btn-icon">&#11015;</span> 下载标注原文
+              </button>
             </div>
-          ` : ''}
-        </details>
+            <pre class="aligned-text annotated">${this.escapeHtml(annotatedText)}</pre>
+          </div>
+          <div class="aligned-panel" id="keypoints-${index}">
+            ${keyPointsHtml || '<div class="empty-hint">未检测到关键提示</div>'}
+          </div>
+        </div>
 
         <!-- 格式检测报告 -->
         ${this.renderComplianceReport(material, index)}
       </div>
     `;
+  },
+
+  switchAlignedTab(btn, panelId, materialIndex) {
+    const card = btn.closest('.aligned-card');
+    card.querySelectorAll('.aligned-tab').forEach(t => t.classList.remove('active'));
+    card.querySelectorAll('.aligned-panel').forEach(p => p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById(panelId).classList.add('active');
   },
 
   renderComplianceReport(material, materialIndex) {
